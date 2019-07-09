@@ -1,0 +1,38 @@
+{
+  "name": "btc-bridge",
+  "version": "0.0.1",
+  "description": "A simple Bitcoin library for broadcasting transactions and querying chain state over RPC and/or 3rd party provider's APIs",
+  "main": "index.js",
+  "repository": "https://github.com/Tierion/btc-bridge.git",
+  "author": "Jason Bukowski <jason@tierion.com>",
+  "license": "Apache-2.0",
+  "private": false,
+  "scripts": {
+    "eslint-check": "eslint --print-config . | eslint-config-prettier-check"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "linters": {
+      "*.js": [
+        "eslint --fix",
+        "git add"
+      ],
+      "*.{json,css,md}": [
+        "prettier --write",
+        "git add"
+      ]
+    }
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^4.1.0",
+    "eslint-plugin-prettier": "^3.0.1",
+    "husky": "^1.3.1",
+    "lint-staged": "^8.1.5",
+    "prettier": "^1.17.0"
+  }
+}
