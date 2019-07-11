@@ -41,7 +41,7 @@ let blockcypher = function(network, apiToken, withRawResult = false) {
         return {
           fromTxId: output.tx_hash,
           outputIndex: output.tx_output_n,
-          value: BigNumber(output.value)
+          amount: BigNumber(output.value)
             .dividedBy(10 ** 8)
             .toNumber()
         }
@@ -123,7 +123,6 @@ let blockcypher = function(network, apiToken, withRawResult = false) {
       txId: rawResult.hash,
       version: rawResult.ver,
       blockHash: rawResult.block_hash || null,
-      blockHeight: rawResult.block_height || null,
       confirmations: rawResult.confirmations || 0,
       time: time,
       blockTime: blockTime,
@@ -265,6 +264,6 @@ let blockcypher = function(network, apiToken, withRawResult = false) {
 }
 
 module.exports = blockcypher
-module.exports.getInstance = opts => {
-  return new blockcypher(opts)
+module.exports.getInstance = (network, apiToken, withRawResult) => {
+  return new blockcypher(network, apiToken, withRawResult)
 }
