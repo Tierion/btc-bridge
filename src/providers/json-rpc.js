@@ -17,7 +17,7 @@ let jsonrpc = function(url, withRawResult = false) {
   let globalReturnRawResult = withRawResult
 
   this.getUnspentOutputsAsync = async (address, withRawResult = false) => {
-    // Note: This will only work via RPC is the address is added to teh wallet
+    // Note: This will only work via RPC is the address is added to the wallet
     let options = {
       method: 'POST',
       url: url,
