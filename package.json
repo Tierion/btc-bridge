@@ -2,7 +2,7 @@
   "name": "btc-bridge",
   "version": "0.0.1",
   "description": "A simple Bitcoin library for broadcasting transactions and querying chain state over RPC and/or 3rd party provider's APIs",
-  "main": "index.js",
+  "main": "src/index.js",
   "repository": "https://github.com/Tierion/btc-bridge.git",
   "author": "Jason Bukowski <jason@tierion.com>",
   "license": "Apache-2.0",
@@ -32,5 +32,10 @@
     "husky": "^3.0.0",
     "lint-staged": "^9.1.0",
     "prettier": "^1.17.0"
+  },
+  "dependencies": {
+    "bignumber.js": "^9.0.0",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.7"
   }
 }
