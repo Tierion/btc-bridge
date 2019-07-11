@@ -137,14 +137,33 @@ let jsonrpc = function(url, withRawResult = false) {
   }
 
   this.getBlockDataAsync = async (blockHeightOrHash, withRawResult = false) => {
-    let options = {
+    let options
+    let response
+    if (typeof blockHeightOrHash == 'number') {
+      // a height was received, retrieve the block hash for this height
+      options = {
+        method: 'POST',
+        url: url,
+        body: JSON.stringify({ method: 'getblockhash', params: [blockHeightOrHash] }),
+        resolveWithFullResponse: true
+      }
+
+      try {
+        response = await rp(options)
+      } catch (error) {
+        if (error.statusCode) throw new Error(`Invalid response : ${error.statusCode} : ${error.message}`)
+        throw new Error(`No response received on getBlockDataAsync : ${error.message}`)
+      }
+
+      blockHeightOrHash = JSON.parse(response.body).result
+    }
+    options = {
       method: 'POST',
       url: url,
       body: JSON.stringify({ method: 'getblock', params: [blockHeightOrHash, true] }),
       resolveWithFullResponse: true
     }
 
-    let response
     try {
       response = await rp(options)
     } catch (error) {
