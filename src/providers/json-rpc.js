@@ -35,8 +35,6 @@ let jsonrpc = function(url, user = null, pass = null, withRawResult = false) {
 
     let rawResult = JSON.parse(response.body).result
 
-    console.log(response.body)
-
     let unspentOutputs = rawResult.map(output => {
       return {
         fromTxId: output.txid,
