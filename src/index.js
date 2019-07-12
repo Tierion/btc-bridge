@@ -11,5 +11,7 @@
  */
 
 const providers = require('./providers')
+const utils = require('./utils')
 
 module.exports.providers = providers
+module.exports.utils = utils
