@@ -73,7 +73,7 @@ let blockcypher = function(network, apiToken, withRawResult = false) {
       throw new Error(`No response received on broadcastTransactionAsync : ${error.message}`)
     }
 
-    let rawResult = response.body
+    let rawResult = JSON.parse(response.body)
     if (rawResult.error) throw new Error(rawResult.error)
 
     let result = { txId: rawResult.tx.hash }
