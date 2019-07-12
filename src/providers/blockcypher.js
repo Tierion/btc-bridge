@@ -248,9 +248,6 @@ let blockcypher = function(network, apiToken, withRawResult = false) {
 }
 
 module.exports = blockcypher
-module.exports.getInstance = (network, apiToken, withRawResult) => {
-  return new blockcypher(network, apiToken, withRawResult)
-}
 module.exports.setRP = r => {
   rp = r
 }
