@@ -10,8 +10,9 @@
  * limitations under the License.
  */
 
-const rp = require('request-promise-native')
+let rp = require('request-promise-native')
 const BigNumber = require('bignumber.js')
+const utils = require('../utils')
 
 let blockcypher = function(network, apiToken, withRawResult = false) {
   let networkName = network === 'testnet' ? 'test3' : 'main'
@@ -173,7 +174,7 @@ let blockcypher = function(network, apiToken, withRawResult = false) {
     result.previousBlockHash = rawResult.prev_block
     result.time = Date.parse(rawResult.time) / 1000
     result.nonce = rawResult.nonce
-    result.difficulty = bitsToDifficulty(rawResult.bits)
+    result.difficulty = utils.bitsToDifficulty(rawResult.bits)
 
     // if there are more transaction ids to retrieve, do so in batches
     if (result.nTx > limit) {
@@ -244,26 +245,12 @@ let blockcypher = function(network, apiToken, withRawResult = false) {
       result.raw = { provider: 'blockcypher', uri: 'https://api.blockcypher.com/v1', result: rawResult }
     return result
   }
-
-  // *** PRIVATE SUPPORT FUNCTIONS  ***
-
-  function bitsToDifficulty(bits) {
-    let hexBits = bits.toString(16)
-    let bitCount = parseInt(hexBits.slice(0, 2), 16)
-    let bitTarget = hexBits.slice(2)
-    let bitsNeeded = bitCount - bitTarget.length / 2
-
-    let bitTargetInt = parseInt(bitTarget + '00'.repeat(bitsNeeded), 16)
-    let genTargetInt = parseInt('00ffff0000000000000000000000000000000000000000000000000000', 16)
-    let difficulty = BigNumber(genTargetInt)
-      .dividedBy(bitTargetInt)
-      .toNumber()
-
-    return difficulty
-  }
 }
 
 module.exports = blockcypher
 module.exports.getInstance = (network, apiToken, withRawResult) => {
   return new blockcypher(network, apiToken, withRawResult)
+}
+module.exports.setRP = r => {
+  rp = r
 }
