@@ -10,7 +10,7 @@
  * limitations under the License.
  */
 
-const rp = require('request-promise-native')
+let rp = require('request-promise-native')
 const BigNumber = require('bignumber.js')
 
 let jsonrpc = function(url, user = null, pass = null, withRawResult = false) {
@@ -19,7 +19,7 @@ let jsonrpc = function(url, user = null, pass = null, withRawResult = false) {
   if (user && pass) baseOptions.auth = { user, pass }
 
   this.getUnspentOutputsAsync = async (address, withRawResult = false) => {
-    // Note: This will only work via RPC is the address is added to the wallet
+    // Note: This will only work via RPC if the address has been added to the wallet
     let options = Object.assign(
       { body: JSON.stringify({ method: 'listunspent', params: [0, 9999999, [address]] }) },
       baseOptions
@@ -29,7 +29,10 @@ let jsonrpc = function(url, user = null, pass = null, withRawResult = false) {
     try {
       response = await rp(options)
     } catch (error) {
-      if (error.statusCode) throw new Error(`Invalid response : ${error.statusCode} : ${error.message}`)
+      if (error.statusCode) {
+        if (error.statusCode === 401) throw new Error(`Invalid credentials`)
+        throw new Error(`Invalid response : ${error.statusCode} : ${JSON.parse(error.error).error}`)
+      }
       throw new Error(`No response received on getUnspentOutputsAsync : ${error.message}`)
     }
 
@@ -58,7 +61,10 @@ let jsonrpc = function(url, user = null, pass = null, withRawResult = false) {
     try {
       response = await rp(options)
     } catch (error) {
-      if (error.statusCode) throw new Error(`Invalid response : ${error.statusCode} : ${error.message}`)
+      if (error.statusCode) {
+        if (error.statusCode === 401) throw new Error(`Invalid credentials`)
+        throw new Error(`Invalid response : ${error.statusCode} : ${JSON.parse(error.error).error}`)
+      }
       throw new Error(`No response received on broadcastTransactionAsync : ${error.message}`)
     }
 
@@ -79,7 +85,10 @@ let jsonrpc = function(url, user = null, pass = null, withRawResult = false) {
     try {
       response = await rp(options)
     } catch (error) {
-      if (error.statusCode) throw new Error(`Invalid response : ${error.statusCode} : ${error.message}`)
+      if (error.statusCode) {
+        if (error.statusCode === 401) throw new Error(`Invalid credentials`)
+        throw new Error(`Invalid response : ${error.statusCode} : ${JSON.parse(error.error).error}`)
+      }
       throw new Error(`No response received on getTransactionDataAsync : ${error.message}`)
     }
 
@@ -140,7 +149,10 @@ let jsonrpc = function(url, user = null, pass = null, withRawResult = false) {
       try {
         response = await rp(options)
       } catch (error) {
-        if (error.statusCode) throw new Error(`Invalid response : ${error.statusCode} : ${error.message}`)
+        if (error.statusCode) {
+          if (error.statusCode === 401) throw new Error(`Invalid credentials`)
+          throw new Error(`Invalid response : ${error.statusCode} : ${JSON.parse(error.error).error}`)
+        }
         throw new Error(`No response received on getBlockDataAsync : ${error.message}`)
       }
       blockHeightOrHash = JSON.parse(response.body).result
@@ -154,7 +166,10 @@ let jsonrpc = function(url, user = null, pass = null, withRawResult = false) {
     try {
       response = await rp(options)
     } catch (error) {
-      if (error.statusCode) throw new Error(`Invalid response : ${error.statusCode} : ${error.message}`)
+      if (error.statusCode) {
+        if (error.statusCode === 401) throw new Error(`Invalid credentials`)
+        throw new Error(`Invalid response : ${error.statusCode} : ${JSON.parse(error.error).error}`)
+      }
       throw new Error(`No response received on getBlockDataAsync : ${error.message}`)
     }
 
@@ -188,7 +203,10 @@ let jsonrpc = function(url, user = null, pass = null, withRawResult = false) {
     try {
       response = await rp(options)
     } catch (error) {
-      if (error.statusCode) throw new Error(`Invalid response : ${error.statusCode} : ${error.message}`)
+      if (error.statusCode) {
+        if (error.statusCode === 401) throw new Error(`Invalid credentials`)
+        throw new Error(`Invalid response : ${error.statusCode} : ${JSON.parse(error.error).error}`)
+      }
       throw new Error(`No response received on getEstimatedFeeAsync : ${error.message}`)
     }
 
@@ -202,6 +220,6 @@ let jsonrpc = function(url, user = null, pass = null, withRawResult = false) {
 }
 
 module.exports = jsonrpc
-module.exports.getInstance = (url, withRawResult) => {
-  return new jsonrpc(url, withRawResult)
+module.exports.setRP = r => {
+  rp = r
 }
