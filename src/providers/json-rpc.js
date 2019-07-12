@@ -13,17 +13,17 @@
 const rp = require('request-promise-native')
 const BigNumber = require('bignumber.js')
 
-let jsonrpc = function(url, withRawResult = false) {
+let jsonrpc = function(url, user = null, pass = null, withRawResult = false) {
   let globalReturnRawResult = withRawResult
+  let baseOptions = { method: 'POST', url: url, resolveWithFullResponse: true }
+  if (user && pass) baseOptions.auth = { user, pass }
 
   this.getUnspentOutputsAsync = async (address, withRawResult = false) => {
     // Note: This will only work via RPC is the address is added to the wallet
-    let options = {
-      method: 'POST',
-      url: url,
-      body: JSON.stringify({ method: 'listunspent', params: [0, 9999999, [address]] }),
-      resolveWithFullResponse: true
-    }
+    let options = Object.assign(
+      { body: JSON.stringify({ method: 'listunspent', params: [0, 9999999, [address]] }) },
+      baseOptions
+    )
 
     let response
     try {
@@ -51,15 +51,10 @@ let jsonrpc = function(url, withRawResult = false) {
   }
 
   this.broadcastTransactionAsync = async (transactionHex, withRawResult = false) => {
-    let options = {
-      method: 'POST',
-      url: url,
-      body: {
-        method: 'sendrawtransaction',
-        params: [transactionHex]
-      },
-      resolveWithFullResponse: true
-    }
+    let options = Object.assign(
+      { body: JSON.stringify({ method: 'sendrawtransaction', params: [transactionHex] }) },
+      baseOptions
+    )
 
     let response
     try {
@@ -77,12 +72,10 @@ let jsonrpc = function(url, withRawResult = false) {
   }
 
   this.getTransactionDataAsync = async (transactionId, withRawResult = false) => {
-    let options = {
-      method: 'POST',
-      url: url,
-      body: JSON.stringify({ method: 'getrawtransaction', params: [transactionId, 1] }),
-      resolveWithFullResponse: true
-    }
+    let options = Object.assign(
+      { body: JSON.stringify({ method: 'getrawtransaction', params: [transactionId, 1] }) },
+      baseOptions
+    )
 
     let response
     try {
@@ -137,16 +130,14 @@ let jsonrpc = function(url, withRawResult = false) {
   }
 
   this.getBlockDataAsync = async (blockHeightOrHash, withRawResult = false) => {
-    let options
-    let response
+    let options, response
+
     if (typeof blockHeightOrHash == 'number') {
       // a height was received, retrieve the block hash for this height
-      options = {
-        method: 'POST',
-        url: url,
-        body: JSON.stringify({ method: 'getblockhash', params: [blockHeightOrHash] }),
-        resolveWithFullResponse: true
-      }
+      options = Object.assign(
+        { body: JSON.stringify({ method: 'getblockhash', params: [blockHeightOrHash] }) },
+        baseOptions
+      )
 
       try {
         response = await rp(options)
@@ -154,15 +145,13 @@ let jsonrpc = function(url, withRawResult = false) {
         if (error.statusCode) throw new Error(`Invalid response : ${error.statusCode} : ${error.message}`)
         throw new Error(`No response received on getBlockDataAsync : ${error.message}`)
       }
-
       blockHeightOrHash = JSON.parse(response.body).result
     }
-    options = {
-      method: 'POST',
-      url: url,
-      body: JSON.stringify({ method: 'getblock', params: [blockHeightOrHash, true] }),
-      resolveWithFullResponse: true
-    }
+
+    options = Object.assign(
+      { body: JSON.stringify({ method: 'getblock', params: [blockHeightOrHash, true] }) },
+      baseOptions
+    )
 
     try {
       response = await rp(options)
@@ -192,12 +181,10 @@ let jsonrpc = function(url, withRawResult = false) {
   }
 
   this.getEstimatedFeeAsync = async (numBlocks, withRawResult = false) => {
-    let options = {
-      method: 'POST',
-      url: url,
-      body: JSON.stringify({ method: 'estimatesmartfee', params: [numBlocks] }),
-      resolveWithFullResponse: true
-    }
+    let options = Object.assign(
+      { body: JSON.stringify({ method: 'estimatesmartfee', params: [numBlocks] }) },
+      baseOptions
+    )
 
     let response
     try {
