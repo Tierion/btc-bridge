@@ -37,7 +37,7 @@ let blockcypher = function(network, apiToken, withRawResult = false) {
     let rawResult = JSON.parse(response.body)
     if (rawResult.error) throw new Error(rawResult.error)
 
-    let txRefs = rawResult.txrefs
+    let txRefs = rawResult.txrefs || []
     if (rawResult.unconfirmed_txrefs) txRefs = txRefs.concat(rawResult.unconfirmed_txrefs)
     let unspentOutputs = []
     if (txRefs) {
