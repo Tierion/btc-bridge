@@ -9,3 +9,104 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+const Blockcypher = require('./blockcypher')
+const JsonRpc = require('./json-rpc')
+
+let fallback = function(...providerArray) {
+  if (!Array.isArray(providerArray) || providerArray.length === 0)
+    throw new Error('No providers specified for fallback provider')
+  for (let [index, provider] of providerArray.entries()) {
+    if (!(provider instanceof Blockcypher) && !(provider instanceof JsonRpc))
+      throw new Error(`Invalid provider specified at index ${index} for fallback provider`)
+  }
+
+  let providers = providerArray
+
+  this.getUnspentOutputsAsync = async (address, withRawResult = false) => {
+    let errors = []
+    for (let provider of providers) {
+      try {
+        let result = await provider.getUnspentOutputsAsync(address, withRawResult)
+        return result
+      } catch (error) {
+        errors.push({
+          provider: provider.name,
+          uri: provider.publicUri,
+          error: error.message
+        })
+      }
+    }
+    throw new Error(JSON.stringify(errors))
+  }
+
+  this.broadcastTransactionAsync = async (transactionHex, withRawResult = false) => {
+    let errors = []
+    for (let provider of providers) {
+      try {
+        let result = await provider.broadcastTransactionAsync(transactionHex, withRawResult)
+        return result
+      } catch (error) {
+        errors.push({
+          provider: provider.name,
+          uri: provider.publicUri,
+          error: error.message
+        })
+      }
+    }
+    throw new Error(JSON.stringify(errors))
+  }
+
+  this.getTransactionDataAsync = async (transactionId, withRawResult = false) => {
+    let errors = []
+    for (let provider of providers) {
+      try {
+        let result = await provider.getTransactionDataAsync(transactionId, withRawResult)
+        return result
+      } catch (error) {
+        errors.push({
+          provider: provider.name,
+          uri: provider.publicUri,
+          error: error.message
+        })
+      }
+    }
+    throw new Error(JSON.stringify(errors))
+  }
+
+  this.getBlockDataAsync = async (blockHeightOrHash, withRawResult = false) => {
+    let errors = []
+    for (let provider of providers) {
+      try {
+        let result = await provider.getBlockDataAsync(blockHeightOrHash, withRawResult)
+        return result
+      } catch (error) {
+        errors.push({
+          provider: provider.name,
+          uri: provider.publicUri,
+          error: error.message
+        })
+      }
+    }
+    throw new Error(JSON.stringify(errors))
+  }
+
+  this.getEstimatedFeeAsync = async (numBlocks, withRawResult = false) => {
+    let errors = []
+    for (let provider of providers) {
+      try {
+        let result = await provider.getEstimatedFeeAsync(numBlocks, withRawResult)
+        return result
+      } catch (error) {
+        errors.push({
+          provider: provider.name,
+          uri: provider.publicUri,
+          error: error.message
+        })
+      }
+    }
+    throw new Error(JSON.stringify(errors))
+  }
+}
+
+module.exports = fallback
