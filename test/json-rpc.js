@@ -30,7 +30,7 @@ describe('JSON-RPC Provider', () => {
   describe('getUnspentOutputsAsync with badaddress', () => {
     before(() => {
       btcBridge.providers.JsonRpcProvider.setRP(async () => {
-        throw { statusCode: 400, error: JSON.stringify({ error: 'badaddress!' }) }
+        throw { statusCode: 400, error: JSON.stringify({ error: { code: -1, message: 'badaddress!' } }) }
       })
     })
     it('should return the proper error', async () => {
@@ -179,7 +179,7 @@ describe('JSON-RPC Provider', () => {
   describe('broadcastTransactionAsync with bad hex', () => {
     before(() => {
       btcBridge.providers.JsonRpcProvider.setRP(async () => {
-        throw { statusCode: 400, error: JSON.stringify({ error: 'error!' }) }
+        throw { statusCode: 400, error: JSON.stringify({ error: { code: -1, message: 'error!' } }) }
       })
     })
     it('should return the proper error', async () => {
@@ -286,7 +286,7 @@ describe('JSON-RPC Provider', () => {
   describe('getTransactionDataAsync with badid', () => {
     before(() => {
       btcBridge.providers.JsonRpcProvider.setRP(async () => {
-        throw { statusCode: 400, error: JSON.stringify({ error: 'badid!' }) }
+        throw { statusCode: 400, error: JSON.stringify({ error: { code: -1, message: 'badid!' } }) }
       })
     })
     it('should return the proper error', async () => {
@@ -659,7 +659,8 @@ describe('JSON-RPC Provider', () => {
     before(() => {
       btcBridge.providers.JsonRpcProvider.setRP(async opts => {
         let method = JSON.parse(opts.body).method
-        if (method === 'getblock') throw { statusCode: 400, error: JSON.stringify({ error: 'badheight!' }) }
+        if (method === 'getblock')
+          throw { statusCode: 400, error: JSON.stringify({ error: { code: -1, message: 'badheight!' } }) }
         return ''
       })
     })
@@ -699,7 +700,8 @@ describe('JSON-RPC Provider', () => {
     before(() => {
       btcBridge.providers.JsonRpcProvider.setRP(async opts => {
         let method = JSON.parse(opts.body).method
-        if (method === 'getblockhash') throw { statusCode: 400, error: JSON.stringify({ error: 'badheight!' }) }
+        if (method === 'getblockhash')
+          throw { statusCode: 400, error: JSON.stringify({ error: { code: -1, message: 'badheight!' } }) }
         return ''
       })
     })
@@ -935,7 +937,7 @@ describe('JSON-RPC Provider', () => {
   describe('getEstimatedFeeAsync with server error', () => {
     before(() => {
       btcBridge.providers.JsonRpcProvider.setRP(async () => {
-        throw { statusCode: 500, error: JSON.stringify({ error: 'error!' }) }
+        throw { statusCode: 500, error: JSON.stringify({ error: { code: -1, message: 'error!' } }) }
       })
     })
     it('should return the proper error', async () => {

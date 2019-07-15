@@ -34,7 +34,7 @@ let jsonrpc = function(uri, user = null, pass = null, withRawResult = false) {
     } catch (error) {
       if (error.statusCode) {
         if (error.statusCode === 401) throw new Error(`Invalid credentials`)
-        throw new Error(`Invalid response : ${error.statusCode} : ${JSON.parse(error.error).error}`)
+        throw new Error(`Invalid response : ${error.statusCode} : ${JSON.parse(error.error).error.message}`)
       }
       throw new Error(`No response received on getUnspentOutputsAsync : ${error.message}`)
     }
@@ -67,7 +67,7 @@ let jsonrpc = function(uri, user = null, pass = null, withRawResult = false) {
     } catch (error) {
       if (error.statusCode) {
         if (error.statusCode === 401) throw new Error(`Invalid credentials`)
-        throw new Error(`Invalid response : ${error.statusCode} : ${JSON.parse(error.error).error}`)
+        throw new Error(`Invalid response : ${error.statusCode} : ${JSON.parse(error.error).error.message}`)
       }
       throw new Error(`No response received on broadcastTransactionAsync : ${error.message}`)
     }
@@ -92,7 +92,7 @@ let jsonrpc = function(uri, user = null, pass = null, withRawResult = false) {
     } catch (error) {
       if (error.statusCode) {
         if (error.statusCode === 401) throw new Error(`Invalid credentials`)
-        throw new Error(`Invalid response : ${error.statusCode} : ${JSON.parse(error.error).error}`)
+        throw new Error(`Invalid response : ${error.statusCode} : ${JSON.parse(error.error).error.message}`)
       }
       throw new Error(`No response received on getTransactionDataAsync : ${error.message}`)
     }
@@ -157,7 +157,7 @@ let jsonrpc = function(uri, user = null, pass = null, withRawResult = false) {
       } catch (error) {
         if (error.statusCode) {
           if (error.statusCode === 401) throw new Error(`Invalid credentials`)
-          throw new Error(`Invalid response : ${error.statusCode} : ${JSON.parse(error.error).error}`)
+          throw new Error(`Invalid response : ${error.statusCode} : ${JSON.parse(error.error).error.message}`)
         }
         throw new Error(`No response received on getBlockDataAsync : ${error.message}`)
       }
@@ -174,7 +174,7 @@ let jsonrpc = function(uri, user = null, pass = null, withRawResult = false) {
     } catch (error) {
       if (error.statusCode) {
         if (error.statusCode === 401) throw new Error(`Invalid credentials`)
-        throw new Error(`Invalid response : ${error.statusCode} : ${JSON.parse(error.error).error}`)
+        throw new Error(`Invalid response : ${error.statusCode} : ${JSON.parse(error.error).error.message}`)
       }
       throw new Error(`No response received on getBlockDataAsync : ${error.message}`)
     }
@@ -212,7 +212,7 @@ let jsonrpc = function(uri, user = null, pass = null, withRawResult = false) {
     } catch (error) {
       if (error.statusCode) {
         if (error.statusCode === 401) throw new Error(`Invalid credentials`)
-        throw new Error(`Invalid response : ${error.statusCode} : ${JSON.parse(error.error).error}`)
+        throw new Error(`Invalid response : ${error.statusCode} : ${JSON.parse(error.error).error.message}`)
       }
       throw new Error(`No response received on getEstimatedFeeAsync : ${error.message}`)
     }
