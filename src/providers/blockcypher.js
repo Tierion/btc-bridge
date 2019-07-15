@@ -115,9 +115,9 @@ let blockcypher = function(network, apiToken, withRawResult = false) {
       .plus(fees)
       .toNumber()
 
-    let anchorValue = null
+    let opReturnValue = null
     if (rawResult.outputs) {
-      anchorValue = rawResult.outputs.reduce((result, item) => {
+      opReturnValue = rawResult.outputs.reduce((result, item) => {
         if (item.script_type === 'null-data') result = item.data_hex
         return result
       }, null)
@@ -134,7 +134,7 @@ let blockcypher = function(network, apiToken, withRawResult = false) {
       valueIn: valueIn,
       valueOut: valueOut,
       fees: fees,
-      anchorValue: anchorValue
+      opReturnValue: opReturnValue
     }
     if (withRawResult || globalReturnRawResult)
       result.raw = { provider: 'blockcypher', uri: this.publicUri, result: rawResult }

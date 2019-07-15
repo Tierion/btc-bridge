@@ -115,9 +115,9 @@ let jsonrpc = function(uri, user = null, pass = null, withRawResult = false) {
       .minus(valueOut)
       .toNumber()
 
-    let anchorValue = null
+    let opReturnValue = null
     if (rawResult.vout) {
-      anchorValue = rawResult.vout.reduce((result, item) => {
+      opReturnValue = rawResult.vout.reduce((result, item) => {
         if (item.scriptPubKey && item.scriptPubKey.asm && item.scriptPubKey.asm.startsWith('OP_RETURN '))
           result = item.scriptPubKey.asm.replace('OP_RETURN ', '')
         return result
@@ -135,7 +135,7 @@ let jsonrpc = function(uri, user = null, pass = null, withRawResult = false) {
       valueIn: valueIn,
       valueOut: valueOut,
       fees: fees,
-      anchorValue: anchorValue
+      opReturnValue: opReturnValue
     }
     if (withRawResult || globalReturnRawResult)
       result.raw = { provider: 'json-rpc', uri: this.publicUri, result: rawResult }
