@@ -10,8 +10,8 @@
  * limitations under the License.
  */
 
-const Blockcypher = require('./blockcypher')
-const JsonRpc = require('./json-rpc')
+let Blockcypher = require('./blockcypher')
+let JsonRpc = require('./json-rpc')
 
 let fallback = function(providers, randomize = false) {
   if (!Array.isArray(providers) || providers.length === 0)
@@ -85,3 +85,6 @@ let fallback = function(providers, randomize = false) {
 }
 
 module.exports = fallback
+// additional functions for testing purposes
+module.exports.setBC = p => (Blockcypher = p)
+module.exports.setRPC = p => (JsonRpc = p)
