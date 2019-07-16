@@ -13,18 +13,17 @@
 const Blockcypher = require('./blockcypher')
 const JsonRpc = require('./json-rpc')
 
-let fallback = function(...providerArray) {
-  if (!Array.isArray(providerArray) || providerArray.length === 0)
-    throw new Error('No providers specified for fallback provider')
-  for (let [index, provider] of providerArray.entries()) {
+let fallback = function(providers, randomize = false) {
+  if (!Array.isArray(providers) || providers.length === 0)
+    throw new Error('No providers array specified for fallback provider')
+  for (let [index, provider] of providers.entries()) {
     if (!(provider instanceof Blockcypher) && !(provider instanceof JsonRpc))
       throw new Error(`Invalid provider specified at index ${index} for fallback provider`)
   }
 
-  let providers = providerArray
-
   this.getUnspentOutputsAsync = async (address, withRawResult = false) => {
     let errors = []
+    if (randomize) providers = shuffleArray(providers)
     for (let provider of providers) {
       try {
         let result = await provider.getUnspentOutputsAsync(address, withRawResult)
@@ -42,6 +41,7 @@ let fallback = function(...providerArray) {
 
   this.broadcastTransactionAsync = async (transactionHex, withRawResult = false) => {
     let errors = []
+    if (randomize) providers = shuffleArray(providers)
     for (let provider of providers) {
       try {
         let result = await provider.broadcastTransactionAsync(transactionHex, withRawResult)
@@ -59,6 +59,7 @@ let fallback = function(...providerArray) {
 
   this.getTransactionDataAsync = async (transactionId, withRawResult = false) => {
     let errors = []
+    if (randomize) providers = shuffleArray(providers)
     for (let provider of providers) {
       try {
         let result = await provider.getTransactionDataAsync(transactionId, withRawResult)
@@ -76,6 +77,7 @@ let fallback = function(...providerArray) {
 
   this.getBlockDataAsync = async (blockHeightOrHash, withRawResult = false) => {
     let errors = []
+    if (randomize) providers = shuffleArray(providers)
     for (let provider of providers) {
       try {
         let result = await provider.getBlockDataAsync(blockHeightOrHash, withRawResult)
@@ -93,6 +95,7 @@ let fallback = function(...providerArray) {
 
   this.getEstimatedFeeAsync = async (numBlocks, withRawResult = false) => {
     let errors = []
+    if (randomize) providers = shuffleArray(providers)
     for (let provider of providers) {
       try {
         let result = await provider.getEstimatedFeeAsync(numBlocks, withRawResult)
@@ -106,6 +109,18 @@ let fallback = function(...providerArray) {
       }
     }
     throw new Error(JSON.stringify(errors))
+  }
+
+  // private support functions
+
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      let temp = array[i]
+      array[i] = array[j]
+      array[j] = temp
+    }
+    return array
   }
 }
 
