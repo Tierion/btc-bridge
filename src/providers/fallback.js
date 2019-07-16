@@ -22,84 +22,46 @@ let fallback = function(providers, randomize = false) {
   }
 
   this.getUnspentOutputsAsync = async (address, withRawResult = false) => {
-    let errors = []
-    if (randomize) providers = shuffleArray(providers)
-    for (let provider of providers) {
-      try {
-        let result = await provider.getUnspentOutputsAsync(address, withRawResult)
-        return result
-      } catch (error) {
-        errors.push({
-          provider: provider.name,
-          uri: provider.publicUri,
-          error: error.message
-        })
-      }
-    }
-    throw new Error(JSON.stringify(errors))
+    return await callProviderFunctionAsync('getUnspentOutputsAsync', [address, withRawResult])
   }
 
   this.broadcastTransactionAsync = async (transactionHex, withRawResult = false) => {
-    let errors = []
-    if (randomize) providers = shuffleArray(providers)
-    for (let provider of providers) {
-      try {
-        let result = await provider.broadcastTransactionAsync(transactionHex, withRawResult)
-        return result
-      } catch (error) {
-        errors.push({
-          provider: provider.name,
-          uri: provider.publicUri,
-          error: error.message
-        })
-      }
-    }
-    throw new Error(JSON.stringify(errors))
+    return await callProviderFunctionAsync('broadcastTransactionAsync', [transactionHex, withRawResult])
   }
 
   this.getTransactionDataAsync = async (transactionId, withRawResult = false) => {
-    let errors = []
-    if (randomize) providers = shuffleArray(providers)
-    for (let provider of providers) {
-      try {
-        let result = await provider.getTransactionDataAsync(transactionId, withRawResult)
-        return result
-      } catch (error) {
-        errors.push({
-          provider: provider.name,
-          uri: provider.publicUri,
-          error: error.message
-        })
-      }
-    }
-    throw new Error(JSON.stringify(errors))
+    return await callProviderFunctionAsync('getTransactionDataAsync', [transactionId, withRawResult])
   }
 
   this.getBlockDataAsync = async (blockHeightOrHash, withRawResult = false) => {
-    let errors = []
-    if (randomize) providers = shuffleArray(providers)
-    for (let provider of providers) {
-      try {
-        let result = await provider.getBlockDataAsync(blockHeightOrHash, withRawResult)
-        return result
-      } catch (error) {
-        errors.push({
-          provider: provider.name,
-          uri: provider.publicUri,
-          error: error.message
-        })
-      }
-    }
-    throw new Error(JSON.stringify(errors))
+    return await callProviderFunctionAsync('getBlockDataAsync', [blockHeightOrHash, withRawResult])
   }
 
   this.getEstimatedFeeAsync = async (numBlocks, withRawResult = false) => {
+    return await callProviderFunctionAsync('getEstimatedFeeAsync', [numBlocks, withRawResult])
+  }
+
+  // private support functions
+
+  async function callProviderFunctionAsync(name, params) {
     let errors = []
     if (randomize) providers = shuffleArray(providers)
     for (let provider of providers) {
       try {
-        let result = await provider.getEstimatedFeeAsync(numBlocks, withRawResult)
-        return result
+        switch (name) {
+          case 'getUnspentOutputsAsync':
+            return await provider.getUnspentOutputsAsync(...params)
+          case 'broadcastTransactionAsync':
+            return await provider.broadcastTransactionAsync(...params)
+          case 'getTransactionDataAsync':
+            return await provider.getTransactionDataAsync(...params)
+          case 'getBlockDataAsync':
+            return await provider.getBlockDataAsync(...params)
+          case 'getEstimatedFeeAsync':
+            return await provider.getEstimatedFeeAsync(...params)
+          default:
+            throw new Error(`Unknown function name : ${name}`)
+        }
       } catch (error) {
         errors.push({
           provider: provider.name,
@@ -110,8 +72,6 @@ let fallback = function(providers, randomize = false) {
     }
     throw new Error(JSON.stringify(errors))
   }
-
-  // private support functions
 
   function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
