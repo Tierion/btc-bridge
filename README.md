@@ -175,7 +175,7 @@ Sample response:
   "confirmations": 6,
   "merkleRoot": "6647bf3a257a41772f65947bb00ae055bbcf2767574226cd691d7d570cf58b2a",
   "nTx": 198,
-  "tx": [], // An array of transaction ids for this block, removed from this sample response
+  "tx": ["An array of transaction ids for this block, removed from this sample response"],
   "previousBlockHash": "000000000015b1950d9f65de374ed01c6fff2aa5873647f79e0e7a5db2d3659f",
   "time": 1563389415,
   "nonce": 3447372525,
