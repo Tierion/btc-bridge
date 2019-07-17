@@ -42,7 +42,7 @@ let bcProvider = new btcBridge.providers.BlockcypherProvider(network, apiKey, ra
 
 #### Fallback
 
-This provider allows you to fall back on other providers in the event of failure. The provider is configured with an array of other JSON-RPC and/or Blockcypher providers. By default, the first provider in the array will be used, and in the event of failure, the next provider in the list will be attempted, in sequential order. You may optionally set `randomize` to `true` in order to use a randomize the order in which providers are use on each function call.
+This provider allows you to fall back on other providers. The provider is configured with an array of JSON-RPC and/or Blockcypher providers. By default, the first provider in the array will be used, and in the event of failure, the next provider in the list will be attempted, in sequential order. You may optionally set `randomize` to `true` in order to randomize the order in which providers are used on each function call.
 
 ```javascript
 const btcBridge = require('btcBridge')
