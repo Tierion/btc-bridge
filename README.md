@@ -176,7 +176,7 @@ Sample response:
   "merkleRoot": "6647bf3a257a41772f65947bb00ae055bbcf2767574226cd691d7d570cf58b2a",
   "nTx": 198,
   "tx": [
-    /* Array of transaction ids */
+    // Array of transaction ids
   ],
   "previousBlockHash": "000000000015b1950d9f65de374ed01c6fff2aa5873647f79e0e7a5db2d3659f",
   "time": 1563389415,
@@ -206,7 +206,7 @@ Sample response:
 
 ## Wallet
 
-A Wallet object contains information about a bitcoin address as well as a provider to perform function for that address. Currently, this is limitted to the generation (and optional broadcast) of an OP_RETURN transaction.
+A Wallet object contains information about a bitcoin address as well as a provider to perform functions for that address. Currently, this is limitted to the generation (and optional broadcast) of an OP_RETURN transaction.
 
 #### generateOpReturnTxAsync
 
