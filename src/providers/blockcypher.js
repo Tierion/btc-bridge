@@ -21,14 +21,16 @@ let blockcypher = function(net, apiToken, withRawResult = false) {
   let blockcypherToken = apiToken
   let globalReturnRawResult = withRawResult
 
-  this.name = 'blockcypher'
-  this.network = net
-  this.publicUri = 'https://api.blockcypher.com/v1'
+  let name = 'blockcypher'
+  let network = net
+  let publicUri = 'https://api.blockcypher.com/v1'
+  this.getName = () => name
+  this.getNetwork = () => network
+  this.getPublicUri = () => publicUri
 
   this.getUnspentOutputsAsync = async (address, withRawResult = false) => {
     let targetUrl = `https://api.blockcypher.com/v1/btc/${networkName}/addrs/${address}?token=${blockcypherToken}&unspentOnly=1`
     let options = { method: 'GET', url: targetUrl, resolveWithFullResponse: true }
-
     let response
     try {
       response = await rp(options)
@@ -56,8 +58,7 @@ let blockcypher = function(net, apiToken, withRawResult = false) {
     }
 
     let result = { unspentOutputs }
-    if (withRawResult || globalReturnRawResult)
-      result.raw = { provider: 'blockcypher', uri: this.publicUri, result: rawResult }
+    if (withRawResult || globalReturnRawResult) result.raw = { provider: name, uri: publicUri, result: rawResult }
     return result
   }
 
@@ -83,8 +84,7 @@ let blockcypher = function(net, apiToken, withRawResult = false) {
     if (rawResult.error) throw new Error(rawResult.error)
 
     let result = { txId: rawResult.tx.hash }
-    if (withRawResult || globalReturnRawResult)
-      result.raw = { provider: 'blockcypher', uri: this.publicUri, result: rawResult }
+    if (withRawResult || globalReturnRawResult) result.raw = { provider: name, uri: publicUri, result: rawResult }
     return result
   }
 
@@ -139,8 +139,7 @@ let blockcypher = function(net, apiToken, withRawResult = false) {
       fees: fees,
       opReturnValue: opReturnValue
     }
-    if (withRawResult || globalReturnRawResult)
-      result.raw = { provider: 'blockcypher', uri: this.publicUri, result: rawResult }
+    if (withRawResult || globalReturnRawResult) result.raw = { provider: name, uri: publicUri, result: rawResult }
     return result
   }
 
@@ -215,8 +214,7 @@ let blockcypher = function(net, apiToken, withRawResult = false) {
       }
     }
 
-    if (withRawResult || globalReturnRawResult)
-      result.raw = { provider: 'blockcypher', uri: this.publicUri, result: rawResult }
+    if (withRawResult || globalReturnRawResult) result.raw = { provider: name, uri: publicUri, result: rawResult }
     return result
   }
 
@@ -247,8 +245,7 @@ let blockcypher = function(net, apiToken, withRawResult = false) {
 
     let result = { feerate: feeRateBtcPerKb }
 
-    if (withRawResult || globalReturnRawResult)
-      result.raw = { provider: 'blockcypher', uri: this.publicUri, result: rawResult }
+    if (withRawResult || globalReturnRawResult) result.raw = { provider: name, uri: publicUri, result: rawResult }
     return result
   }
 }

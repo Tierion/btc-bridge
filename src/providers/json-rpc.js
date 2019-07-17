@@ -20,9 +20,12 @@ let jsonrpc = function(net, uri, user = null, pass = null, withRawResult = false
   let baseOptions = { method: 'POST', url: uri, resolveWithFullResponse: true }
   if (user && pass) baseOptions.auth = { user, pass }
 
-  this.name = 'json-rpc'
-  this.network = net
-  this.publicUri = uri
+  let name = 'json-rpc'
+  let network = net
+  let publicUri = uri
+  this.getName = () => name
+  this.getNetwork = () => network
+  this.getPublicUri = () => publicUri
 
   this.getUnspentOutputsAsync = async (address, withRawResult = false) => {
     // Note: This will only work via RPC if the address has been added to the wallet
@@ -53,8 +56,7 @@ let jsonrpc = function(net, uri, user = null, pass = null, withRawResult = false
     })
 
     let result = { unspentOutputs }
-    if (withRawResult || globalReturnRawResult)
-      result.raw = { provider: 'json-rpc', uri: this.publicUri, result: rawResult }
+    if (withRawResult || globalReturnRawResult) result.raw = { provider: name, uri: publicUri, result: rawResult }
     return result
   }
 
@@ -78,8 +80,7 @@ let jsonrpc = function(net, uri, user = null, pass = null, withRawResult = false
     let rawResult = JSON.parse(response.body).result
 
     let result = { txId: rawResult }
-    if (withRawResult || globalReturnRawResult)
-      result.raw = { provider: 'json-rpc', uri: this.publicUri, result: rawResult }
+    if (withRawResult || globalReturnRawResult) result.raw = { provider: name, uri: publicUri, result: rawResult }
     return result
   }
 
@@ -140,8 +141,7 @@ let jsonrpc = function(net, uri, user = null, pass = null, withRawResult = false
       fees: fees,
       opReturnValue: opReturnValue
     }
-    if (withRawResult || globalReturnRawResult)
-      result.raw = { provider: 'json-rpc', uri: this.publicUri, result: rawResult }
+    if (withRawResult || globalReturnRawResult) result.raw = { provider: name, uri: publicUri, result: rawResult }
     return result
   }
 
@@ -198,8 +198,7 @@ let jsonrpc = function(net, uri, user = null, pass = null, withRawResult = false
     result.nonce = rawResult.nonce
     result.difficulty = rawResult.difficulty
 
-    if (withRawResult || globalReturnRawResult)
-      result.raw = { provider: 'json-rpc', uri: this.publicUri, result: rawResult }
+    if (withRawResult || globalReturnRawResult) result.raw = { provider: name, uri: publicUri, result: rawResult }
     return result
   }
 
@@ -224,8 +223,7 @@ let jsonrpc = function(net, uri, user = null, pass = null, withRawResult = false
 
     let result = { feerate: rawResult.feerate }
 
-    if (withRawResult || globalReturnRawResult)
-      result.raw = { provider: 'json-rpc', uri: this.publicUri, result: rawResult }
+    if (withRawResult || globalReturnRawResult) result.raw = { provider: name, uri: publicUri, result: rawResult }
     return result
   }
 }
