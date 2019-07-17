@@ -13,13 +13,16 @@
 let rp = require('request-promise-native')
 const BigNumber = require('bignumber.js')
 const utils = require('../utils')
+const networks = require('../networks')
 
-let blockcypher = function(network, apiToken, withRawResult = false) {
-  let networkName = network === 'testnet' ? 'test3' : 'main'
+let blockcypher = function(net, apiToken, withRawResult = false) {
+  if (net !== networks.MAINNET && net !== networks.TESTNET) throw new Error('Invalid network')
+  let networkName = net === networks.TESTNET ? 'test3' : 'main'
   let blockcypherToken = apiToken
   let globalReturnRawResult = withRawResult
 
   this.name = 'blockcypher'
+  this.network = net
   this.publicUri = 'https://api.blockcypher.com/v1'
 
   this.getUnspentOutputsAsync = async (address, withRawResult = false) => {

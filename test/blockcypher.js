@@ -6,8 +6,21 @@ process.env.NODE_ENV = 'test'
 const expect = require('chai').expect
 
 const btcBridge = require('../src/index')
+const networks = require('../src/networks')
 
 describe('Blockcypher Provider', () => {
+  describe('Provider with bad network', () => {
+    it('should return the proper error', async () => {
+      let err = ''
+      try {
+        new btcBridge.providers.BlockcypherProvider('badnetwork')
+      } catch (error) {
+        err = error.message
+      }
+      expect(err).to.equal('Invalid network')
+    })
+  })
+
   describe('getUnspentOutputsAsync with badaddress', () => {
     before(() => {
       btcBridge.providers.BlockcypherProvider.setRP(async () => {
@@ -15,7 +28,7 @@ describe('Blockcypher Provider', () => {
       })
     })
     it('should return the proper error', async () => {
-      let bc = new btcBridge.providers.BlockcypherProvider('testnet')
+      let bc = new btcBridge.providers.BlockcypherProvider(networks.TESTNET)
       let err = null
       try {
         await bc.getUnspentOutputsAsync('badaddress')
@@ -33,7 +46,7 @@ describe('Blockcypher Provider', () => {
       })
     })
     it('should return the proper error', async () => {
-      let bc = new btcBridge.providers.BlockcypherProvider('testnet')
+      let bc = new btcBridge.providers.BlockcypherProvider(networks.TESTNET)
       let err = null
       try {
         await bc.getUnspentOutputsAsync('badaddress')
@@ -78,7 +91,7 @@ describe('Blockcypher Provider', () => {
       })
     })
     it('should return the proper success result', async () => {
-      let bc = new btcBridge.providers.BlockcypherProvider('testnet')
+      let bc = new btcBridge.providers.BlockcypherProvider(networks.TESTNET)
       let result = await bc.getUnspentOutputsAsync(address)
       expect(result).to.be.a('object')
       expect(result)
@@ -133,7 +146,7 @@ describe('Blockcypher Provider', () => {
       })
     })
     it('should return the proper success result', async () => {
-      let bc = new btcBridge.providers.BlockcypherProvider('testnet')
+      let bc = new btcBridge.providers.BlockcypherProvider(networks.TESTNET)
       let result = await bc.getUnspentOutputsAsync(address, true)
       expect(result).to.be.a('object')
       expect(result)
@@ -170,7 +183,7 @@ describe('Blockcypher Provider', () => {
       })
     })
     it('should return the proper error', async () => {
-      let bc = new btcBridge.providers.BlockcypherProvider('testnet')
+      let bc = new btcBridge.providers.BlockcypherProvider(networks.TESTNET)
       let err = null
       try {
         await bc.broadcastTransactionAsync('nothex')
@@ -188,7 +201,7 @@ describe('Blockcypher Provider', () => {
       })
     })
     it('should return the proper error', async () => {
-      let bc = new btcBridge.providers.BlockcypherProvider('testnet')
+      let bc = new btcBridge.providers.BlockcypherProvider(networks.TESTNET)
       let err = null
       try {
         await bc.broadcastTransactionAsync('deadbeef')
@@ -254,7 +267,7 @@ describe('Blockcypher Provider', () => {
       })
     })
     it('should return the proper success result', async () => {
-      let bc = new btcBridge.providers.BlockcypherProvider('testnet')
+      let bc = new btcBridge.providers.BlockcypherProvider(networks.TESTNET)
       let result = await bc.broadcastTransactionAsync(tx)
       expect(result).to.be.a('object')
       expect(result)
@@ -319,7 +332,7 @@ describe('Blockcypher Provider', () => {
       })
     })
     it('should return the proper success result', async () => {
-      let bc = new btcBridge.providers.BlockcypherProvider('testnet')
+      let bc = new btcBridge.providers.BlockcypherProvider(networks.TESTNET)
       let result = await bc.broadcastTransactionAsync(tx, 1)
       expect(result).to.be.a('object')
       expect(result)
@@ -345,7 +358,7 @@ describe('Blockcypher Provider', () => {
       })
     })
     it('should return the proper error', async () => {
-      let bc = new btcBridge.providers.BlockcypherProvider('testnet')
+      let bc = new btcBridge.providers.BlockcypherProvider(networks.TESTNET)
       let err = null
       try {
         await bc.getTransactionDataAsync('badid')
@@ -363,7 +376,7 @@ describe('Blockcypher Provider', () => {
       })
     })
     it('should return the proper error', async () => {
-      let bc = new btcBridge.providers.BlockcypherProvider('testnet')
+      let bc = new btcBridge.providers.BlockcypherProvider(networks.TESTNET)
       let err = null
       try {
         await bc.getTransactionDataAsync('badid')
@@ -433,7 +446,7 @@ describe('Blockcypher Provider', () => {
       })
     })
     it('should return the proper success result', async () => {
-      let bc = new btcBridge.providers.BlockcypherProvider('testnet')
+      let bc = new btcBridge.providers.BlockcypherProvider(networks.TESTNET)
       let result = await bc.getTransactionDataAsync(txId)
       expect(result).to.be.a('object')
       expect(result)
@@ -533,7 +546,7 @@ describe('Blockcypher Provider', () => {
       })
     })
     it('should return the proper success result', async () => {
-      let bc = new btcBridge.providers.BlockcypherProvider('testnet')
+      let bc = new btcBridge.providers.BlockcypherProvider(networks.TESTNET)
       let result = await bc.getTransactionDataAsync(txId)
       expect(result).to.be.a('object')
       expect(result)
@@ -632,7 +645,7 @@ describe('Blockcypher Provider', () => {
       })
     })
     it('should return the proper success result', async () => {
-      let bc = new btcBridge.providers.BlockcypherProvider('testnet')
+      let bc = new btcBridge.providers.BlockcypherProvider(networks.TESTNET)
       let result = await bc.getTransactionDataAsync(txId, true)
       expect(result).to.be.a('object')
       expect(result)
@@ -688,7 +701,7 @@ describe('Blockcypher Provider', () => {
       })
     })
     it('should return the proper error', async () => {
-      let bc = new btcBridge.providers.BlockcypherProvider('testnet')
+      let bc = new btcBridge.providers.BlockcypherProvider(networks.TESTNET)
       let err = null
       try {
         await bc.getBlockDataAsync('badhash')
@@ -706,7 +719,7 @@ describe('Blockcypher Provider', () => {
       })
     })
     it('should return the proper error', async () => {
-      let bc = new btcBridge.providers.BlockcypherProvider('testnet')
+      let bc = new btcBridge.providers.BlockcypherProvider(networks.TESTNET)
       let err = null
       try {
         await bc.getBlockDataAsync('badhash')
@@ -766,7 +779,7 @@ describe('Blockcypher Provider', () => {
       })
     })
     it('should return the proper success result', async () => {
-      let bc = new btcBridge.providers.BlockcypherProvider('testnet')
+      let bc = new btcBridge.providers.BlockcypherProvider(networks.TESTNET)
       let result = await bc.getBlockDataAsync(height)
       expect(result).to.be.a('object')
       expect(result)
@@ -859,7 +872,7 @@ describe('Blockcypher Provider', () => {
       })
     })
     it('should return the proper success result', async () => {
-      let bc = new btcBridge.providers.BlockcypherProvider('testnet')
+      let bc = new btcBridge.providers.BlockcypherProvider(networks.TESTNET)
       let result = await bc.getBlockDataAsync(height, true)
       expect(result).to.be.a('object')
       expect(result)
@@ -919,7 +932,7 @@ describe('Blockcypher Provider', () => {
       })
     })
     it('should return the proper error', async () => {
-      let bc = new btcBridge.providers.BlockcypherProvider('testnet')
+      let bc = new btcBridge.providers.BlockcypherProvider(networks.TESTNET)
       let err = null
       try {
         await bc.getEstimatedFeeAsync(1)
@@ -937,7 +950,7 @@ describe('Blockcypher Provider', () => {
       })
     })
     it('should return the proper error', async () => {
-      let bc = new btcBridge.providers.BlockcypherProvider('testnet')
+      let bc = new btcBridge.providers.BlockcypherProvider(networks.TESTNET)
       let err = null
       try {
         await bc.getEstimatedFeeAsync(1)
@@ -973,7 +986,7 @@ describe('Blockcypher Provider', () => {
       })
     })
     it('should return the proper success result', async () => {
-      let bc = new btcBridge.providers.BlockcypherProvider('testnet')
+      let bc = new btcBridge.providers.BlockcypherProvider(networks.TESTNET)
       let result = await bc.getEstimatedFeeAsync(1)
       expect(result).to.be.a('object')
       expect(result)
@@ -1008,7 +1021,7 @@ describe('Blockcypher Provider', () => {
       })
     })
     it('should return the proper success result', async () => {
-      let bc = new btcBridge.providers.BlockcypherProvider('testnet')
+      let bc = new btcBridge.providers.BlockcypherProvider(networks.TESTNET)
       let result = await bc.getEstimatedFeeAsync(3)
       expect(result).to.be.a('object')
       expect(result)
@@ -1043,7 +1056,7 @@ describe('Blockcypher Provider', () => {
       })
     })
     it('should return the proper success result', async () => {
-      let bc = new btcBridge.providers.BlockcypherProvider('testnet')
+      let bc = new btcBridge.providers.BlockcypherProvider(networks.TESTNET)
       let result = await bc.getEstimatedFeeAsync(25)
       expect(result).to.be.a('object')
       expect(result)
@@ -1078,7 +1091,7 @@ describe('Blockcypher Provider', () => {
       })
     })
     it('should return the proper success result', async () => {
-      let bc = new btcBridge.providers.BlockcypherProvider('testnet')
+      let bc = new btcBridge.providers.BlockcypherProvider(networks.TESTNET)
       let result = await bc.getEstimatedFeeAsync(25, true)
       expect(result).to.be.a('object')
       expect(result)

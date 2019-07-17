@@ -12,13 +12,16 @@
 
 let rp = require('request-promise-native')
 const BigNumber = require('bignumber.js')
+const networks = require('../networks')
 
-let jsonrpc = function(uri, user = null, pass = null, withRawResult = false) {
+let jsonrpc = function(net, uri, user = null, pass = null, withRawResult = false) {
+  if (net !== networks.MAINNET && net !== networks.TESTNET) throw new Error('Invalid network')
   let globalReturnRawResult = withRawResult
   let baseOptions = { method: 'POST', url: uri, resolveWithFullResponse: true }
   if (user && pass) baseOptions.auth = { user, pass }
 
   this.name = 'json-rpc'
+  this.network = net
   this.publicUri = uri
 
   this.getUnspentOutputsAsync = async (address, withRawResult = false) => {

@@ -7,6 +7,7 @@ const expect = require('chai').expect
 
 const btcBridge = require('../src/index')
 const Fallback = require('../src/providers/fallback')
+const networks = require('../src/networks')
 
 describe('Fallback Provider', () => {
   describe('Init with non array data', () => {
@@ -45,7 +46,7 @@ describe('Fallback Provider', () => {
   })
   describe('Init with good and bad object', () => {
     it('should return the proper error', async () => {
-      let bc = new btcBridge.providers.BlockcypherProvider('testnet', 'key')
+      let bc = new btcBridge.providers.BlockcypherProvider(networks.TESTNET, 'key')
       let badObj = { 1: 1 }
       let err = null
       try {

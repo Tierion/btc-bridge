@@ -10,12 +10,7 @@
  * limitations under the License.
  */
 
-const providers = require('./providers')
-const utils = require('./utils')
-const wallet = require('./wallet')
-const networks = require('./networks')
-
-module.exports.providers = providers
-module.exports.utils = utils
-module.exports.Wallet = wallet
-module.exports.networks = networks
+module.exports = {
+  MAINNET: 'main',
+  TESTNET: 'testnet'
+}

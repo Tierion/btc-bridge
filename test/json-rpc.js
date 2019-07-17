@@ -9,6 +9,19 @@ const btcBridge = require('../src/index')
 
 describe('JSON-RPC Provider', () => {
   let uri = 'http://10.1.1.1:123'
+
+  describe('Provider with bad network', () => {
+    it('should return the proper error', async () => {
+      let err = ''
+      try {
+        new btcBridge.providers.JsonRpcProvider(uri)
+      } catch (error) {
+        err = error.message
+      }
+      expect(err).to.equal('Invalid network')
+    })
+  })
+
   describe('getUnspentOutputsAsync with bad auth', () => {
     before(() => {
       btcBridge.providers.JsonRpcProvider.setRP(async () => {
@@ -16,7 +29,7 @@ describe('JSON-RPC Provider', () => {
       })
     })
     it('should return the proper error', async () => {
-      let rpc = new btcBridge.providers.JsonRpcProvider(uri)
+      let rpc = new btcBridge.providers.JsonRpcProvider(btcBridge.networks.MAINNET, uri)
       let err = null
       try {
         await rpc.getUnspentOutputsAsync('badaddress')
@@ -34,7 +47,7 @@ describe('JSON-RPC Provider', () => {
       })
     })
     it('should return the proper error', async () => {
-      let rpc = new btcBridge.providers.JsonRpcProvider(uri)
+      let rpc = new btcBridge.providers.JsonRpcProvider(btcBridge.networks.MAINNET, uri)
       let err = null
       try {
         await rpc.getUnspentOutputsAsync('badaddress')
@@ -52,7 +65,7 @@ describe('JSON-RPC Provider', () => {
       })
     })
     it('should return the proper error', async () => {
-      let rpc = new btcBridge.providers.JsonRpcProvider(uri)
+      let rpc = new btcBridge.providers.JsonRpcProvider(btcBridge.networks.MAINNET, uri)
       let err = null
       try {
         await rpc.getUnspentOutputsAsync('badaddress')
@@ -85,7 +98,7 @@ describe('JSON-RPC Provider', () => {
       })
     })
     it('should return the proper success result', async () => {
-      let rpc = new btcBridge.providers.JsonRpcProvider(uri)
+      let rpc = new btcBridge.providers.JsonRpcProvider(btcBridge.networks.MAINNET, uri)
       let result = await rpc.getUnspentOutputsAsync(address)
       expect(result).to.be.a('object')
       expect(result)
@@ -128,7 +141,7 @@ describe('JSON-RPC Provider', () => {
       })
     })
     it('should return the proper success result', async () => {
-      let rpc = new btcBridge.providers.JsonRpcProvider(uri)
+      let rpc = new btcBridge.providers.JsonRpcProvider(btcBridge.networks.MAINNET, uri)
       let result = await rpc.getUnspentOutputsAsync(address, true)
       expect(result).to.be.a('object')
       expect(result)
@@ -165,7 +178,7 @@ describe('JSON-RPC Provider', () => {
       })
     })
     it('should return the proper error', async () => {
-      let rpc = new btcBridge.providers.JsonRpcProvider(uri)
+      let rpc = new btcBridge.providers.JsonRpcProvider(btcBridge.networks.MAINNET, uri)
       let err = null
       try {
         await rpc.broadcastTransactionAsync('nothex')
@@ -183,7 +196,7 @@ describe('JSON-RPC Provider', () => {
       })
     })
     it('should return the proper error', async () => {
-      let rpc = new btcBridge.providers.JsonRpcProvider(uri)
+      let rpc = new btcBridge.providers.JsonRpcProvider(btcBridge.networks.MAINNET, uri)
       let err = null
       try {
         await rpc.broadcastTransactionAsync('nothex')
@@ -201,7 +214,7 @@ describe('JSON-RPC Provider', () => {
       })
     })
     it('should return the proper error', async () => {
-      let rpc = new btcBridge.providers.JsonRpcProvider(uri)
+      let rpc = new btcBridge.providers.JsonRpcProvider(btcBridge.networks.MAINNET, uri)
       let err = null
       try {
         await rpc.broadcastTransactionAsync('deadbeef')
@@ -224,7 +237,7 @@ describe('JSON-RPC Provider', () => {
       })
     })
     it('should return the proper success result', async () => {
-      let rpc = new btcBridge.providers.JsonRpcProvider(uri)
+      let rpc = new btcBridge.providers.JsonRpcProvider(btcBridge.networks.MAINNET, uri)
       let result = await rpc.broadcastTransactionAsync(tx)
       expect(result).to.be.a('object')
       expect(result)
@@ -246,7 +259,7 @@ describe('JSON-RPC Provider', () => {
       })
     })
     it('should return the proper success result', async () => {
-      let rpc = new btcBridge.providers.JsonRpcProvider(uri)
+      let rpc = new btcBridge.providers.JsonRpcProvider(btcBridge.networks.MAINNET, uri)
       let result = await rpc.broadcastTransactionAsync(tx, 1)
       expect(result).to.be.a('object')
       expect(result)
@@ -272,7 +285,7 @@ describe('JSON-RPC Provider', () => {
       })
     })
     it('should return the proper error', async () => {
-      let rpc = new btcBridge.providers.JsonRpcProvider(uri)
+      let rpc = new btcBridge.providers.JsonRpcProvider(btcBridge.networks.MAINNET, uri)
       let err = null
       try {
         await rpc.getTransactionDataAsync('badid')
@@ -290,7 +303,7 @@ describe('JSON-RPC Provider', () => {
       })
     })
     it('should return the proper error', async () => {
-      let rpc = new btcBridge.providers.JsonRpcProvider(uri)
+      let rpc = new btcBridge.providers.JsonRpcProvider(btcBridge.networks.MAINNET, uri)
       let err = null
       try {
         await rpc.getTransactionDataAsync('badid')
@@ -308,7 +321,7 @@ describe('JSON-RPC Provider', () => {
       })
     })
     it('should return the proper error', async () => {
-      let rpc = new btcBridge.providers.JsonRpcProvider(uri)
+      let rpc = new btcBridge.providers.JsonRpcProvider(btcBridge.networks.MAINNET, uri)
       let err = null
       try {
         await rpc.getTransactionDataAsync('badid')
@@ -382,7 +395,7 @@ describe('JSON-RPC Provider', () => {
       })
     })
     it('should return the proper success result', async () => {
-      let rpc = new btcBridge.providers.JsonRpcProvider(uri)
+      let rpc = new btcBridge.providers.JsonRpcProvider(btcBridge.networks.MAINNET, uri)
       let result = await rpc.getTransactionDataAsync(txId)
       expect(result).to.be.a('object')
       expect(result)
@@ -485,7 +498,7 @@ describe('JSON-RPC Provider', () => {
       })
     })
     it('should return the proper success result', async () => {
-      let rpc = new btcBridge.providers.JsonRpcProvider(uri)
+      let rpc = new btcBridge.providers.JsonRpcProvider(btcBridge.networks.MAINNET, uri)
       let result = await rpc.getTransactionDataAsync(txId)
       expect(result).to.be.a('object')
       expect(result)
@@ -588,7 +601,7 @@ describe('JSON-RPC Provider', () => {
       })
     })
     it('should return the proper success result', async () => {
-      let rpc = new btcBridge.providers.JsonRpcProvider(uri)
+      let rpc = new btcBridge.providers.JsonRpcProvider(btcBridge.networks.MAINNET, uri)
       let result = await rpc.getTransactionDataAsync(txId, true)
       expect(result).to.be.a('object')
       expect(result)
@@ -644,7 +657,7 @@ describe('JSON-RPC Provider', () => {
       })
     })
     it('should return the proper error', async () => {
-      let rpc = new btcBridge.providers.JsonRpcProvider(uri)
+      let rpc = new btcBridge.providers.JsonRpcProvider(btcBridge.networks.MAINNET, uri)
       let err = null
       try {
         await rpc.getBlockDataAsync('badhash')
@@ -665,7 +678,7 @@ describe('JSON-RPC Provider', () => {
       })
     })
     it('should return the proper error', async () => {
-      let rpc = new btcBridge.providers.JsonRpcProvider(uri)
+      let rpc = new btcBridge.providers.JsonRpcProvider(btcBridge.networks.MAINNET, uri)
       let err = null
       try {
         await rpc.getBlockDataAsync('badhash')
@@ -685,7 +698,7 @@ describe('JSON-RPC Provider', () => {
       })
     })
     it('should return the proper error', async () => {
-      let rpc = new btcBridge.providers.JsonRpcProvider(uri)
+      let rpc = new btcBridge.providers.JsonRpcProvider(btcBridge.networks.MAINNET, uri)
       let err = null
       try {
         await rpc.getBlockDataAsync('badhash')
@@ -706,7 +719,7 @@ describe('JSON-RPC Provider', () => {
       })
     })
     it('should return the proper error', async () => {
-      let rpc = new btcBridge.providers.JsonRpcProvider(uri)
+      let rpc = new btcBridge.providers.JsonRpcProvider(btcBridge.networks.MAINNET, uri)
       let err = null
       try {
         await rpc.getBlockDataAsync(-34535)
@@ -768,7 +781,7 @@ describe('JSON-RPC Provider', () => {
       })
     })
     it('should return the proper success result', async () => {
-      let rpc = new btcBridge.providers.JsonRpcProvider(uri)
+      let rpc = new btcBridge.providers.JsonRpcProvider(btcBridge.networks.MAINNET, uri)
       let result = await rpc.getBlockDataAsync(height)
       expect(result).to.be.a('object')
       expect(result)
@@ -863,7 +876,7 @@ describe('JSON-RPC Provider', () => {
       })
     })
     it('should return the proper success result', async () => {
-      let rpc = new btcBridge.providers.JsonRpcProvider(uri)
+      let rpc = new btcBridge.providers.JsonRpcProvider(btcBridge.networks.MAINNET, uri)
       let result = await rpc.getBlockDataAsync(height, true)
       expect(result).to.be.a('object')
       expect(result)
@@ -923,7 +936,7 @@ describe('JSON-RPC Provider', () => {
       })
     })
     it('should return the proper error', async () => {
-      let rpc = new btcBridge.providers.JsonRpcProvider(uri)
+      let rpc = new btcBridge.providers.JsonRpcProvider(btcBridge.networks.MAINNET, uri)
       let err = null
       try {
         await rpc.getEstimatedFeeAsync(1)
@@ -941,7 +954,7 @@ describe('JSON-RPC Provider', () => {
       })
     })
     it('should return the proper error', async () => {
-      let rpc = new btcBridge.providers.JsonRpcProvider(uri)
+      let rpc = new btcBridge.providers.JsonRpcProvider(btcBridge.networks.MAINNET, uri)
       let err = null
       try {
         await rpc.getEstimatedFeeAsync(1)
@@ -959,7 +972,7 @@ describe('JSON-RPC Provider', () => {
       })
     })
     it('should return the proper error', async () => {
-      let rpc = new btcBridge.providers.JsonRpcProvider(uri)
+      let rpc = new btcBridge.providers.JsonRpcProvider(btcBridge.networks.MAINNET, uri)
       let err = null
       try {
         await rpc.getEstimatedFeeAsync(1)
@@ -983,7 +996,7 @@ describe('JSON-RPC Provider', () => {
       })
     })
     it('should return the proper success result', async () => {
-      let rpc = new btcBridge.providers.JsonRpcProvider(uri)
+      let rpc = new btcBridge.providers.JsonRpcProvider(btcBridge.networks.MAINNET, uri)
       let result = await rpc.getEstimatedFeeAsync(1)
       expect(result).to.be.a('object')
       expect(result)
@@ -1006,7 +1019,7 @@ describe('JSON-RPC Provider', () => {
       })
     })
     it('should return the proper success result', async () => {
-      let rpc = new btcBridge.providers.JsonRpcProvider(uri)
+      let rpc = new btcBridge.providers.JsonRpcProvider(btcBridge.networks.MAINNET, uri)
       let result = await rpc.getEstimatedFeeAsync(1, true)
       expect(result).to.be.a('object')
       expect(result)
