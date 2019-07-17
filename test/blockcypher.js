@@ -263,7 +263,7 @@ describe('Blockcypher Provider', () => {
     }
     before(() => {
       btcBridge.providers.BlockcypherProvider.setRP(async () => {
-        return { body: JSON.stringify(response) }
+        return { body: response }
       })
     })
     it('should return the proper success result', async () => {
@@ -328,7 +328,7 @@ describe('Blockcypher Provider', () => {
     }
     before(() => {
       btcBridge.providers.BlockcypherProvider.setRP(async () => {
-        return { body: JSON.stringify(response) }
+        return { body: response }
       })
     })
     it('should return the proper success result', async () => {
