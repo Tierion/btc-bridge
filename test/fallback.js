@@ -57,9 +57,23 @@ describe('Fallback Provider', () => {
       expect(err).to.equal('Invalid provider specified at index 1 for fallback provider')
     })
   })
+  describe('Init with different network objects', () => {
+    it('should return the proper error', async () => {
+      let bc = new btcBridge.providers.BlockcypherProvider(networks.TESTNET, 'key')
+      let bc2 = new btcBridge.providers.BlockcypherProvider(networks.MAINNET, 'key')
+      let err = null
+      try {
+        new btcBridge.providers.FallbackProvider([bc, bc2])
+      } catch (error) {
+        err = error.message
+      }
+      expect(err).to.equal('Providers must all be configured to use the same network within the fallback provider')
+    })
+  })
   describe('Init with good objects, shuffle disabled', () => {
     let rpc = function(name) {
       this.id = name
+      this.getNetwork = () => networks.MAINNET
       this.getUnspentOutputsAsync = () => {
         throw new Error(this.id)
       }
@@ -85,6 +99,7 @@ describe('Fallback Provider', () => {
   describe('Init with good objects, shuffle enabled', () => {
     let rpc = function(name) {
       this.id = name
+      this.getNetwork = () => networks.MAINNET
       this.getUnspentOutputsAsync = () => {
         throw new Error(this.id)
       }

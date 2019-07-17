@@ -16,10 +16,19 @@ let JsonRpc = require('./json-rpc')
 let fallback = function(providers, randomize = false) {
   if (!Array.isArray(providers) || providers.length === 0)
     throw new Error('No providers array specified for fallback provider')
+  let configuredNetworks = new Set()
   for (let [index, provider] of providers.entries()) {
     if (!(provider instanceof Blockcypher) && !(provider instanceof JsonRpc))
       throw new Error(`Invalid provider specified at index ${index} for fallback provider`)
+    configuredNetworks.add(provider.getNetwork())
+    if (configuredNetworks.size > 1)
+      throw new Error(`Providers must all be configured to use the same network within the fallback provider`)
   }
+
+  let name = 'fallback'
+  this.getName = () => name
+  this.getNetwork = () => providers[0].getNetwork()
+  this.getPublicUri = () => null
 
   this.getUnspentOutputsAsync = async (address, withRawResult = false) => {
     return await callProviderFunctionAsync('getUnspentOutputsAsync', [address, withRawResult])
