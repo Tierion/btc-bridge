@@ -111,7 +111,7 @@ Sample response:
 }
 ```
 
-**IMPORTANT NOTE:** When using the JSON-RPC provider, the address for which you are querying UTXO data MUST be added to that node's wallet, otherwise the results will always be an empty array!
+**IMPORTANT NOTE:** When using the JSON-RPC provider, the address for which you are querying UTXO data MUST be added to that node's wallet, otherwise the results will always be an empty array! If the node you are querying has address indexing enabled, then this will work for any address.
 
 #### broadcastTransactionAsync
 
@@ -210,7 +210,7 @@ Sample response:
 
 ## Wallet
 
-A Wallet object contains information about a bitcoin address as well as a provider to perform functions for that address. Currently, this is limitted to the generation (and optional broadcast) of an OP_RETURN transaction.
+A Wallet object contains information about a bitcoin address as well as a provider to perform functions for that address. Currently, this is limited to the generation (and optional broadcast) of an OP_RETURN transaction.
 
 #### generateOpReturnTxAsync
 
