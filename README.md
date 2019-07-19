@@ -20,7 +20,7 @@ Supported networks: MAINNET, TESTNET, REGTEST
 const btcBridge = require('btcBridge')
 
 let network = btcBridge.networks.MAINNET // or btcBridge.networks.TESTNET
-let uri = 'http://64.101.12.227:18332' // the node URI
+let uri = 'http://64.101.12.227:8332' // the node URI
 let un = 'rpcuser' // the node rpc user name
 let pw = 'rpcpass' // the node rpc password
 let raw = false // additionally return the raw result from the provider (default: false)
@@ -55,13 +55,13 @@ const btcBridge = require('btcBridge')
 
 let network = btcBridge.networks.MAINNET // or btcBridge.networks.TESTNET
 
-let uri1 = 'http://64.101.12.111:18332' // the node URI
+let uri1 = 'http://64.101.12.111:8332' // the node URI
 let un1 = 'rpcuser1' // the node rpc user name
 let pw1 = 'rpcpass1' // the node rpc password
 
 let rpcProvider1 = new btcBridge.providers.JsonRpcProvider(network, uri1, un1, pw1)
 
-let uri2 = 'http://64.101.12.222:18332' // the node URI
+let uri2 = 'http://64.101.12.222:8332' // the node URI
 let un2 = 'rpcuser2' // the node rpc user name
 let pw2 = 'rpcpass2' // the node rpc password
 
