@@ -19,10 +19,21 @@ let wallet = function(privateKeyWIF, provider) {
   let pk = privateKeyWIF
   let pv = provider
 
-  this.generateOpReturnTxAsync = async (hexDataString, fee, broadcast = false) => {
+  this.generateOpReturnTxAsync = async (hexDataString, fee = false, broadcast = false) => {
     const network = pv.getNetwork() === networks.TESTNET ? bitcoin.networks.testnet : bitcoin.networks.bitcoin
     const keyPair = bitcoin.ECPair.fromWIF(pk, network)
     const address = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey, network: network }).address
+
+    // if fee = 'false', then use the estimate fee function to calculate the ideal fee
+    if (fee === false) {
+      const txSizeKb = 0.234375
+      let feeResult = await pv.getEstimatedFeeAsync(2)
+      let feeRateBtcPerKb = feeResult.feerate
+      let calculatedFeeBtc = BigNumber(feeRateBtcPerKb)
+        .times(txSizeKb)
+        .toNumber()
+      fee = calculatedFeeBtc
+    }
 
     let result = await pv.getUnspentOutputsAsync(address)
     let spendableOutput = result.unspentOutputs.sort(utxoSortDesc)[0]
@@ -41,9 +52,12 @@ let wallet = function(privateKeyWIF, provider) {
     let returnAmountBtc = BigNumber(spendableAmountBtc)
       .minus(fee)
       .toNumber()
-    let returnAmountSatoshi = BigNumber(returnAmountBtc)
-      .times(10 ** 8)
-      .toNumber()
+    let returnAmountSatoshi = Math.floor(
+      BigNumber(returnAmountBtc)
+        .times(10 ** 8)
+        .toNumber()
+    )
+    console.log(returnAmountSatoshi)
     tx.addOutput(address, returnAmountSatoshi)
 
     tx.sign(0, keyPair)

@@ -214,7 +214,7 @@ let provider = fbProvider // or any previous configured provider
 let wallet = new btcBridge.Wallet(pkWIF, provider)
 
 let opReturnHexData = 'deadbeefcafe' // the hex data to be stored in the OP_RETURN output
-let fee = 0.001 // the fee to pay to miners, express in BTCed
+let fee = 0.001 // the fee to pay to miners, expressed in BTC. Set to `false` to have the fee estimated automatically (default: false)
 let broadcast = true // optionaly broadcast the transaction to the network (default: false)
 let result = await wallet.generateOpReturnTxAsync(opReturnHexData, fee, broadcast)
 ```
