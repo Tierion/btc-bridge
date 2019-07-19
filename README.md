@@ -105,8 +105,7 @@ Sample response:
 }
 ```
 
-**IMPORTANT NOTE:** When using the JSON-RPC provider, the address for which you are querying UTXO data MUST be added to that node's wallet, otherwise the results will always be an empty array! If the node you are querying has address indexing enabled, then this will work for any
-address.
+**IMPORTANT NOTE:** When using the JSON-RPC provider, the address for which you are querying UTXO data MUST be added to that node's wallet, otherwise the results will always be an empty array! If the node you are querying has address indexing enabled, then this will work for any address.
 
 #### broadcastTransactionAsync
 
