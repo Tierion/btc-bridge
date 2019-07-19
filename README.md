@@ -14,6 +14,8 @@ All blockchain operations are performed through configurable Provider objects. C
 
 This provider allows you to connect through a Bitcoin node's RPC interface.
 
+Supported networks: MAINNET, TESTNET, REGTEST
+
 ```javascript
 const btcBridge = require('btcBridge')
 
@@ -30,6 +32,8 @@ let rpcProvider = new btcBridge.providers.JsonRpcProvider(network, uri, un, pw, 
 
 This provider allows you to connect using the Blockcypher API.
 
+Supported networks: MAINNET, TESTNET
+
 ```javascript
 const btcBridge = require('btcBridge')
 
@@ -43,6 +47,8 @@ let bcProvider = new btcBridge.providers.BlockcypherProvider(network, apiKey, ra
 #### Fallback
 
 This provider allows you to fall back on other providers. The provider is configured with an array of JSON-RPC and/or Blockcypher providers. By default, the first provider in the array will be used, and in the event of failure, the next provider in the list will be attempted, in sequential order. You may optionally set `randomize` to `true` in order to randomize the order in which providers are used on each function call.
+
+Supported networks: Dependent upon type of providers added, all added providers must use the same network.
 
 ```javascript
 const btcBridge = require('btcBridge')

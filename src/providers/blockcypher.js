@@ -16,6 +16,7 @@ const utils = require('../utils')
 const networks = require('../networks')
 
 let blockcypher = function(net, apiToken, withRawResult = false) {
+  if (net === networks.REGTEST) throw new Error('The Blockcypher provider does not support regtest')
   if (net !== networks.MAINNET && net !== networks.TESTNET) throw new Error('Invalid network')
   let networkName = net === networks.TESTNET ? 'test3' : 'main'
   let blockcypherToken = apiToken

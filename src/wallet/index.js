@@ -20,7 +20,18 @@ let wallet = function(privateKeyWIF, provider) {
   let pv = provider
 
   this.generateOpReturnTxAsync = async (hexDataString, fee = false, broadcast = false) => {
-    const network = pv.getNetwork() === networks.TESTNET ? bitcoin.networks.testnet : bitcoin.networks.bitcoin
+    let network
+    switch (pv.getNetwork()) {
+      case networks.MAINNET:
+        network = bitcoin.networks.bitcoin
+        break
+      case networks.TESTNET:
+        network = bitcoin.networks.testnet
+        break
+      case networks.REGTEST:
+        network = bitcoin.networks.regtest
+        break
+    }
     const keyPair = bitcoin.ECPair.fromWIF(pk, network)
     const address = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey, network: network }).address
 

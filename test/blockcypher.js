@@ -9,6 +9,18 @@ const btcBridge = require('../src/index')
 const networks = require('../src/networks')
 
 describe('Blockcypher Provider', () => {
+  describe('Provider with regtest network', () => {
+    it('should return the proper error', async () => {
+      let err = ''
+      try {
+        new btcBridge.providers.BlockcypherProvider('regtest')
+      } catch (error) {
+        err = error.message
+      }
+      expect(err).to.equal('The Blockcypher provider does not support regtest')
+    })
+  })
+
   describe('Provider with bad network', () => {
     it('should return the proper error', async () => {
       let err = ''

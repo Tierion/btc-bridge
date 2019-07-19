@@ -12,5 +12,6 @@
 
 module.exports = {
   MAINNET: 'main',
-  TESTNET: 'testnet'
+  TESTNET: 'testnet',
+  REGTEST: 'regtest'
 }
