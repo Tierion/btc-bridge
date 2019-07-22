@@ -68,7 +68,6 @@ let wallet = function(privateKeyWIF, provider) {
         .times(10 ** 8)
         .toNumber()
     )
-    console.log(returnAmountSatoshi)
     tx.addOutput(address, returnAmountSatoshi)
 
     tx.sign(0, keyPair)
