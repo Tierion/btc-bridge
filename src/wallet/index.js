@@ -19,7 +19,20 @@ let wallet = function(privateKeyWIF, provider) {
   let pk = privateKeyWIF
   let pv = provider
 
-  this.generateOpReturnTxAsync = async (hexDataString, fee = false, broadcast = false) => {
+  this.generateOpReturnTxAsync = async (hexDataString, feeEstimateNumBlocks = 2, broadcast = false) => {
+    if (feeEstimateNumBlocks < 1 || feeEstimateNumBlocks > 1008)
+      throw new Error('Invalid fee estimation block count, must be >= 1 and <= 1008')
+    const txSizeKb = 0.234375
+    let feeResult = await pv.getEstimatedFeeAsync(feeEstimateNumBlocks)
+    let feeRateBtcPerKb = feeResult.feerate
+    let calculatedFeeBtc = BigNumber(feeRateBtcPerKb)
+      .times(txSizeKb)
+      .toNumber()
+
+    return await this.generateOpReturnTxWithFeeAsync(hexDataString, calculatedFeeBtc, broadcast)
+  }
+
+  this.generateOpReturnTxWithFeeAsync = async (hexDataString, fee, broadcast = false) => {
     let network
     switch (pv.getNetwork()) {
       case networks.MAINNET:
@@ -34,17 +47,6 @@ let wallet = function(privateKeyWIF, provider) {
     }
     const keyPair = bitcoin.ECPair.fromWIF(pk, network)
     const address = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey, network: network }).address
-
-    // if fee = 'false', then use the estimate fee function to calculate the ideal fee
-    if (fee === false) {
-      const txSizeKb = 0.234375
-      let feeResult = await pv.getEstimatedFeeAsync(2)
-      let feeRateBtcPerKb = feeResult.feerate
-      let calculatedFeeBtc = BigNumber(feeRateBtcPerKb)
-        .times(txSizeKb)
-        .toNumber()
-      fee = calculatedFeeBtc
-    }
 
     let result = await pv.getUnspentOutputsAsync(address)
     let spendableOutput = result.unspentOutputs.sort(utxoSortDesc)[0]

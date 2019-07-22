@@ -214,15 +214,17 @@ A Wallet object contains information about a bitcoin address as well as a provid
 
 #### generateOpReturnTxAsync
 
+This function will automatically retrieve a fee estimate and calculate the final fee to be used in the transaction.
+
 ```javascript
 let pkWIF = 'c3sdjjXQfj2ncC3YXb8d1Xjg8rJ2oxXnp5BQ8iskE3aFbeefKVb' // the private key in WIF format for the address
 let provider = fbProvider // or any previous configured provider
 let wallet = new btcBridge.Wallet(pkWIF, provider)
 
 let opReturnHexData = 'deadbeefcafe' // the hex data to be stored in the OP_RETURN output
-let fee = 0.001 // the fee to pay to miners, expressed in BTC. Set to `false` to have the fee estimated automatically (default: false)
+let confirmBlocks = 6 // the number of blocks blocks to target before confirmation, used for fee calculation (default: 2)
 let broadcast = true // optionaly broadcast the transaction to the network (default: false)
-let result = await wallet.generateOpReturnTxAsync(opReturnHexData, fee, broadcast)
+let result = await wallet.generateOpReturnTxAsync(opReturnHexData, confirmBlocks, broadcast)
 ```
 
 Sample response:
@@ -231,5 +233,29 @@ Sample response:
 {
   "txId": "7e0c84de8597a7e195e6950e30d4f13d760ff5fa968e19ccf04d37e48e73ffb8",
   "txHex": "0200000001179a398adde5b8d70c6643d8515bfb4b63556904ab719d0df3c60a218a0ba0bc010000008b483045022100b06a40017e1dce8d03259cdcf1cc4953d7adcf1b4bdf3f80b57250fe5bbf9bca02207b0063ce93f1c3b95d8fb12db8e54e05652612b661425198bfb83a1ed9888374014104ca65bc9fd7b1748b989dd86cc393b846ba89db71fc027b2db0dc5c3c3358a768b1431573e38526e3b969aac044b82c2908e01a006cb401cc73495c09af81da2effffffff020000000000000000086a06deadbeefcafe2464090e000000001976a914a1b10285fa95a92cf4027112149de550d4c23ada88ac00000000"
+}
+```
+
+#### generateOpReturnTxWithFeeAsync
+
+This function requires the fee value (in BTC) to be explicitly supplied when invoked.
+
+```javascript
+let pkWIF = 'c3sdjjXQfj2ncC3YXb8d1Xjg8rJ2oxXnp5BQ8iskE3aFbeefKVb' // the private key in WIF format for the address
+let provider = fbProvider // or any previous configured provider
+let wallet = new btcBridge.Wallet(pkWIF, provider)
+
+let opReturnHexData = 'deadbeefcafe' // the hex data to be stored in the OP_RETURN output
+let fee = 0.001 // the fee to pay to miners, expressed in BTC. Set to `false` to have the fee estimated automatically (default: false)
+let broadcast = true // optionaly broadcast the transaction to the network (default: false)
+let result = await wallet.generateOpReturnTxWithFeeAsync(opReturnHexData, fee, broadcast)
+```
+
+Sample response:
+
+```json
+{
+  "txId": "b0a8e2588c4d300097dd2ee5920fd9aab05446c799605de04c353b6234abe267",
+  "txHex": "020000000139a22c3ccc85736fa8ae134b079e9d014c93acfee901f12fcaafbb9d7e053c0e010000008a4730440220205013a0e2c648e9c7944c63fa6669c817f6102cf5d38fee6449733269440e6b022064471aac316ffa97743ac99eaf08dcb8aae20e6ede7a388cbf981870cca02650014104ca65bc9fd7b1748b989dd86cc393b846ba89db71fc027b2db0dc5c3c3358a768b1431573e38526e3b969aac044b82c2908e01a006cb401cc73495c09af81da2effffffff020000000000000000086a06deadbeefcafee2ab1108000000001976a914a1b10285fa95a92cf4027112149de550d4c23ada88ac00000000"
 }
 ```
