@@ -1,5 +1,9 @@
 # btc-bridge
 
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![npm](https://img.shields.io/npm/v/btc-bridge.svg)](https://www.npmjs.com/package/btc-bridge)
+
 A simple library for broadcasting Bitcoin transactions and querying chain state over RPC and/or 3rd party provider APIs
 
 ## Installation
