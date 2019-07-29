@@ -12,7 +12,13 @@ A simple library for broadcasting Bitcoin transactions and querying chain state 
 
 ## Providers
 
-All blockchain operations are performed through configurable Provider objects. Currently, there are three providers to choose from:
+All blockchain operations are performed through configurable Provider objects.
+
+`btc-bridge` offers the following providers:
+
+[JSON-RPC](#json-rpc)  
+[Blockcypher](#blockcypher)  
+[Fallback](#fallback)
 
 #### JSON-RPC
 
@@ -85,6 +91,12 @@ let fbProvider = new btcBridge.providers.FallbackProvider(providers, randomize)
 Providers query their sources and return values using a uniform result schema. Setting `raw` to `true` in the methods below will also add a `raw` field to the result containing the exact repsonse received from the provider's source.
 
 Each provider contains the following methods:
+
+[getUnspentOutputsAsync](#getunspentoutputsasync)  
+[broadcastTransactionAsync](#broadcasttransactionasync)  
+[getTransactionDataAsync](#gettransactiondataasync)  
+[getBlockDataAsync](#getblockdataasync)  
+[getEstimatedFeeAsync](#getestimatedfeeasync)
 
 #### getUnspentOutputsAsync
 
