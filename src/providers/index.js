@@ -12,8 +12,10 @@
 
 const BlockcypherProvider = require('./blockcypher')
 const JsonRpcProvider = require('./json-rpc')
+const LndProvider = require('./lnd')
 const FallbackProvider = require('./fallback')
 
 module.exports.BlockcypherProvider = BlockcypherProvider
 module.exports.JsonRpcProvider = JsonRpcProvider
+module.exports.LndProvider = LndProvider
 module.exports.FallbackProvider = FallbackProvider
