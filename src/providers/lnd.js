@@ -149,7 +149,7 @@ let lnd = function(net, lndSocket, macaroonPath, certPath, walletSecret, withRaw
   this.getEstimatedFeeAsync = async (numBlocks, withRawResult = false) => {
     let rawResult
     try {
-      rawResult = await walletRpc.estimateFeeAsync({ conf_target: 2 })
+      rawResult = await walletRpc.estimateFeeAsync({ conf_target: numBlocks })
     } catch (error) {
       throw new Error(`Invalid response : ${error.message}`)
     }
