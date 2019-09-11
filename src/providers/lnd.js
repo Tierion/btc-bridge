@@ -16,14 +16,18 @@ const bluebird = require('bluebird')
 const bitcoin = require('bitcoinjs-lib')
 const utils = require('../utils')
 const crypto = require('crypto')
+const networks = require('../networks')
 
-let lnd = function(lndSocket, macaroonPath, certPath, walletSecret, withRawResult = false) {
+let lnd = function(net, lndSocket, macaroonPath, certPath, walletSecret, withRawResult = false) {
+  if (net !== networks.MAINNET && net !== networks.TESTNET) throw new Error('Invalid network')
   let globalReturnRawResult = withRawResult
   let lightningRpc = null
   let walletRpc = null
 
   let name = 'lnd'
+  let network = net
   this.getName = () => name
+  this.getNetwork = () => network
   this.getPublicUri = () => lndSocket
 
   this.getUnspentOutputsAsync = async (withRawResult = false) => {
