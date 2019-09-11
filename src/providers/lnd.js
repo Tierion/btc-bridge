@@ -67,10 +67,7 @@ let lnd = function(lndSocket, macaroonPath, certPath, walletSecret, withRawResul
       .createHash('sha256')
       .update(hash1x)
       .digest('hex')
-    let txId = hash2xHex
-      .match(/.{2}/g)
-      .reverse()
-      .join('')
+    let txId = utils.reverseHex(hash2xHex)
     let result = { txId: txId }
     return result
   }
@@ -78,10 +75,7 @@ let lnd = function(lndSocket, macaroonPath, certPath, walletSecret, withRawResul
   this.getTransactionDataAsync = async (transactionId, withRawResult = false) => {
     let rawResult
     try {
-      let txId = transactionId
-        .match(/.{2}/g)
-        .reverse()
-        .join('')
+      let txId = utils.reverseHex(transactionId)
       rawResult = await lightningRpc.getTransactionsAsync({ txid: Buffer.from(txId, 'hex') })
       if (rawResult.transactions.length === 0) throw new Error(`Unknown transaction : ${transactionId}`)
     } catch (error) {
@@ -136,18 +130,10 @@ let lnd = function(lndSocket, macaroonPath, certPath, walletSecret, withRawResul
     result.hash = rawResult.block_hash
     result.height = rawResult.block_height
     result.version = rawResult.version
-    result.merkleRoot = rawResult.merkle_root
-      .toString('hex')
-      .match(/.{2}/g)
-      .reverse()
-      .join('')
+    result.merkleRoot = utils.reverseHex(rawResult.merkle_root.toString('hex'))
     result.nTx = rawResult.transactions.length
     result.tx = rawResult.transactions
-    result.previousBlockHash = rawResult.prev_block
-      .toString('hex')
-      .match(/.{2}/g)
-      .reverse()
-      .join('')
+    result.previousBlockHash = utils.reverseHex(rawResult.prev_block.toString('hex'))
     result.time = rawResult.timestamp
     result.nonce = rawResult.nonce
     result.difficulty = utils.bitsToDifficulty(rawResult.bits)

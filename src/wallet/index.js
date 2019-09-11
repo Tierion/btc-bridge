@@ -12,6 +12,7 @@
 
 const bitcoin = require('bitcoinjs-lib')
 const networks = require('../networks')
+const utils = require('../utils')
 const BigNumber = require('bignumber.js')
 const crypto = require('crypto')
 
@@ -49,7 +50,7 @@ let wallet = function(privateKeyWIF, provider) {
     const address = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey, network: network }).address
 
     let result = await pv.getUnspentOutputsAsync(address)
-    let spendableOutput = result.unspentOutputs.sort(utxoSortDesc)[0]
+    let spendableOutput = result.unspentOutputs.sort(utils.utxoSortDesc)[0]
 
     if (!spendableOutput) throw new Error('No unspent outputs available, balance likely 0')
     if (spendableOutput.amount < fee) throw new Error('No outputs with sufficient funds available')
@@ -76,7 +77,7 @@ let wallet = function(privateKeyWIF, provider) {
 
     let txHex = tx.build().toHex()
     let txData = Buffer.from(txHex, 'hex')
-    let txId = reverseHex(
+    let txId = utils.reverseHex(
       crypto
         .createHash('sha256')
         .update(
@@ -92,21 +93,6 @@ let wallet = function(privateKeyWIF, provider) {
 
     return { txId, txHex }
   }
-}
-
-// private support functions
-
-function utxoSortDesc(a, b) {
-  if (a.amount < b.amount) return 1
-  if (b.amount < a.amount) return -1
-  return 0
-}
-
-function reverseHex(hexString) {
-  return hexString
-    .match(/.{2}/g)
-    .reverse()
-    .join('')
 }
 
 module.exports = wallet

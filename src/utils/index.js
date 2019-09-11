@@ -27,6 +27,21 @@ function bitsToDifficulty(bits) {
   return difficulty
 }
 
+function reverseHex(hexString) {
+  return hexString
+    .match(/.{2}/g)
+    .reverse()
+    .join('')
+}
+
+function utxoSortDesc(a, b) {
+  if (a.amount < b.amount) return 1
+  if (b.amount < a.amount) return -1
+  return 0
+}
+
 module.exports = {
-  bitsToDifficulty: bitsToDifficulty
+  bitsToDifficulty: bitsToDifficulty,
+  reverseHex: reverseHex,
+  utxoSortDesc: utxoSortDesc
 }
