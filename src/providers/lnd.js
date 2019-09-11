@@ -163,6 +163,20 @@ let lnd = function(net, lndSocket, macaroonPath, certPath, walletSecret, withRaw
     return result
   }
 
+  this.getPublicKeyForAddress = async (address, withRawResult = false) => {
+    let rawResult
+    try {
+      rawResult = await walletRpc.keyForAddressAsync({ addr_in: address })
+    } catch (error) {
+      throw new Error(`Invalid response : ${error.message}`)
+    }
+
+    let result = { publicKey: rawResult.raw_key_bytes.toString('hex') }
+
+    if (withRawResult || globalReturnRawResult) result.raw = { provider: name, uri: lndSocket, result: rawResult }
+    return result
+  }
+
   this.ensureWalletUnlocked = async () => {
     try {
       await ensureLndNodeClientWalletUnlockedAsync()
