@@ -15,7 +15,6 @@ const lndClient = require('lnrpc-node-client')
 const bluebird = require('bluebird')
 const bitcoin = require('bitcoinjs-lib')
 const utils = require('../utils')
-const crypto = require('crypto')
 const networks = require('../networks')
 
 let lnd = function(net, lndSocket, macaroonPath, certPath, walletSecret, withRawResult = false) {
@@ -23,6 +22,7 @@ let lnd = function(net, lndSocket, macaroonPath, certPath, walletSecret, withRaw
   let globalReturnRawResult = withRawResult
   let lightningRpc = null
   let walletRpc = null
+  let signerRpc = null
 
   let name = 'lnd'
   let network = net
@@ -42,6 +42,7 @@ let lnd = function(net, lndSocket, macaroonPath, certPath, walletSecret, withRaw
       return {
         fromTxId: output.outpoint.txid_str,
         outputIndex: output.outpoint.output_index,
+        script: output.pk_script,
         amount: BigNumber(output.amount_sat)
           .dividedBy(10 ** 8)
           .toNumber()
@@ -57,23 +58,12 @@ let lnd = function(net, lndSocket, macaroonPath, certPath, walletSecret, withRaw
     let rawResult
     let txBuffer = Buffer.from(transactionHex, 'hex')
     try {
-      rawResult = await walletRpc.PublishTransaction({ tx_hex: txBuffer })
-      if (rawResult) throw new Error(rawResult)
+      rawResult = await walletRpc.PublishTransactionAsync({ tx_hex: txBuffer })
+      if (rawResult.publish_error) throw new Error(rawResult.publish_error)
     } catch (error) {
       throw new Error(`Invalid response : ${error.message}`)
     }
-
-    let hash1x = crypto
-      .createHash('sha256')
-      .update(txBuffer)
-      .digest()
-    let hash2xHex = crypto
-      .createHash('sha256')
-      .update(hash1x)
-      .digest('hex')
-    let txId = utils.reverseHex(hash2xHex)
-    let result = { txId: txId }
-    return result
+    return true
   }
 
   this.getTransactionDataAsync = async (transactionId, withRawResult = false) => {
@@ -163,7 +153,7 @@ let lnd = function(net, lndSocket, macaroonPath, certPath, walletSecret, withRaw
     return result
   }
 
-  this.getPublicKeyForAddress = async (address, withRawResult = false) => {
+  this.getPublicKeyForAddressAsync = async (address, withRawResult = false) => {
     let rawResult
     try {
       rawResult = await walletRpc.keyForAddressAsync({ addr_in: address })
@@ -177,12 +167,39 @@ let lnd = function(net, lndSocket, macaroonPath, certPath, walletSecret, withRaw
     return result
   }
 
+  this.signOutputRawAsync = async (rawTxBytes, publicKeyBytes, inputs, withRawResult = false) => {
+    let rawResult
+    try {
+      rawResult = await signerRpc.signOutputRawAsync({
+        raw_tx_bytes: rawTxBytes,
+        sign_descs: inputs.map((input, inputIndex) => ({
+          key_desc: { raw_key_bytes: publicKeyBytes },
+          witness_script: Buffer.from(input.script, 'hex'),
+          output: {
+            pk_script: Buffer.from(input.script, 'hex'),
+            value: input.amount * 10 ** 8
+          },
+          sighash: bitcoin.Transaction.SIGHASH_ALL,
+          input_index: inputIndex
+        }))
+      })
+    } catch (error) {
+      throw new Error(`Invalid response : ${error.message}`)
+    }
+
+    let result = { signatures: rawResult.raw_sigs }
+
+    if (withRawResult || globalReturnRawResult) result.raw = { provider: name, uri: lndSocket, result: rawResult }
+    return result
+  }
+
   this.ensureWalletUnlocked = async () => {
     try {
       await ensureLndNodeClientWalletUnlockedAsync()
       lndClient.setCredentials(lndSocket, macaroonPath, certPath)
       lightningRpc = bluebird.promisifyAll(lndClient.lightning())
       walletRpc = bluebird.promisifyAll(lndClient.wallet())
+      signerRpc = bluebird.promisifyAll(lndClient.signer())
     } catch (error) {
       throw new Error(`Unlock error : ${error.message}`)
     }
