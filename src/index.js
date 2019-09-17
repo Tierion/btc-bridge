@@ -13,9 +13,11 @@
 const providers = require('./providers')
 const utils = require('./utils')
 const wallet = require('./wallet')
+const lightning = require('./lightning')
 const networks = require('./networks')
 
 module.exports.providers = providers
 module.exports.utils = utils
 module.exports.Wallet = wallet
+module.exports.Lightning = lightning
 module.exports.networks = networks
