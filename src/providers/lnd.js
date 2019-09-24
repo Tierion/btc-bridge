@@ -193,13 +193,21 @@ let lnd = function(net, lndSocket, macaroonPath, certPath, walletSecret, withRaw
     return result
   }
 
-  this.ensureWalletUnlocked = async () => {
+  this.initWallet = async () => {
     try {
-      await ensureLndNodeClientWalletUnlockedAsync()
       lndClient.setCredentials(lndSocket, macaroonPath, certPath)
       lightningRpc = bluebird.promisifyAll(lndClient.lightning())
       walletRpc = bluebird.promisifyAll(lndClient.wallet())
       signerRpc = bluebird.promisifyAll(lndClient.signer())
+    } catch (error) {
+      throw new Error(`Initialization error : ${error.message}`)
+    }
+  }
+
+  this.ensureWalletUnlocked = async () => {
+    try {
+      await ensureLndNodeClientWalletUnlockedAsync()
+      await this.initWallet()
     } catch (error) {
       throw new Error(`Unlock error : ${error.message}`)
     }

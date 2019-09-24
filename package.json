@@ -1,6 +1,6 @@
 {
   "name": "btc-bridge",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A simple Bitcoin library for broadcasting transactions and querying chain state over RPC and/or 3rd party provider's APIs",
   "keywords": [
     "bitcoin",
