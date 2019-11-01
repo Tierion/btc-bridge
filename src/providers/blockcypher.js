@@ -249,6 +249,31 @@ let blockcypher = function(net, apiToken, withRawResult = false) {
     if (withRawResult || globalReturnRawResult) result.raw = { provider: name, uri: publicUri, result: rawResult }
     return result
   }
+
+  this.getChainInfoAsync = async (withRawResult = false) => {
+    let targetUrl = `https://api.blockcypher.com/v1/btc/${networkName}?token=${blockcypherToken}`
+    let options = { method: 'GET', url: targetUrl, resolveWithFullResponse: true }
+
+    let response
+    try {
+      response = await rp(options)
+    } catch (error) {
+      if (error.statusCode) throw new Error(`Invalid response : ${error.statusCode} : ${JSON.parse(error.error).error}`)
+      throw new Error(`No response received on getChainInfoAsync : ${error.message}`)
+    }
+
+    let rawResult = JSON.parse(response.body)
+    if (rawResult.error) throw new Error(rawResult.error)
+
+    let result = {
+      chain: 'BTC',
+      network: rawResult.name.split('.')[1] === 'test3' ? 'testnet' : 'mainnet',
+      topBlockHeight: rawResult.height || null,
+      topBlockHash: rawResult.hash || null
+    }
+    if (withRawResult || globalReturnRawResult) result.raw = { provider: name, uri: publicUri, result: rawResult }
+    return result
+  }
 }
 
 module.exports = blockcypher

@@ -227,6 +227,32 @@ let jsonrpc = function(net, uri, user = null, pass = null, withRawResult = false
     if (withRawResult || globalReturnRawResult) result.raw = { provider: name, uri: publicUri, result: rawResult }
     return result
   }
+
+  this.getChainInfoAsync = async (withRawResult = false) => {
+    let options = Object.assign({ body: JSON.stringify({ method: 'getblockchaininfo' }) }, baseOptions)
+
+    let response
+    try {
+      response = await rp(options)
+    } catch (error) {
+      if (error.statusCode) {
+        if (error.statusCode === 401) throw new Error(`Invalid credentials`)
+        throw new Error(`Invalid response : ${error.statusCode} : ${JSON.parse(error.error).error.message}`)
+      }
+      throw new Error(`No response received on getChainInfoAsync : ${error.message}`)
+    }
+
+    let rawResult = JSON.parse(response.body).result
+
+    let result = {
+      chain: 'BTC',
+      network: rawResult.chain === 'test' ? 'testnet' : 'mainnet',
+      topBlockHeight: rawResult.blocks || null,
+      topBlockHash: rawResult.bestblockhash || null
+    }
+    if (withRawResult || globalReturnRawResult) result.raw = { provider: name, uri: publicUri, result: rawResult }
+    return result
+  }
 }
 
 module.exports = jsonrpc

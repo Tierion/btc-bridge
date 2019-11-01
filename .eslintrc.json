@@ -12,6 +12,7 @@
     "prettier/prettier": "error",
     "linebreak-style": ["error", "unix"],
     "no-console": "off",
+    "require-atomic-updates": "off",
     "camelcase": [
       "error",
       {

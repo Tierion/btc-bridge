@@ -153,6 +153,24 @@ let lnd = function(net, lndSocket, macaroonPath, certPath, walletSecret, withRaw
     return result
   }
 
+  this.getChainInfoAsync = async (withRawResult = false) => {
+    let rawResult
+    try {
+      rawResult = await lightningRpc.getInfoAsync({})
+    } catch (error) {
+      throw new Error(`Invalid response : ${error.message}`)
+    }
+
+    let result = {
+      chain: rawResult.chains[0].chain === 'bitcoin' ? 'BTC' : 'LTC',
+      network: rawResult.chains[0].network,
+      topBlockHeight: rawResult.block_height || null,
+      topBlockHash: rawResult.block_hash || null
+    }
+    if (withRawResult || globalReturnRawResult) result.raw = { provider: name, uri: lndSocket, result: rawResult }
+    return result
+  }
+
   this.getPublicKeyForAddressAsync = async (address, withRawResult = false) => {
     let rawResult
     try {
