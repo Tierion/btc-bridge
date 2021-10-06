@@ -30,7 +30,7 @@ let blockcypher = function(net, apiToken, withRawResult = false) {
   this.getPublicUri = () => publicUri
 
   this.getUnspentOutputsAsync = async (address, withRawResult = false) => {
-    let targetUrl = `https://api.blockcypher.com/v1/btc/${networkName}/addrs/${address}?token=${blockcypherToken}&unspentOnly=1`
+    let targetUrl = `https://api.blockcypher.com/v1/btc/${networkName}/addrs/${address}/full?token=${blockcypherToken}&unspentOnly=1`
     let options = { method: 'GET', url: targetUrl, resolveWithFullResponse: true }
     let response
     try {
@@ -43,20 +43,33 @@ let blockcypher = function(net, apiToken, withRawResult = false) {
     let rawResult = JSON.parse(response.body)
     if (rawResult.error) throw new Error(rawResult.error)
 
-    let txRefs = rawResult.txrefs || []
-    if (rawResult.unconfirmed_txrefs) txRefs = txRefs.concat(rawResult.unconfirmed_txrefs)
+    let txs = rawResult.txs || []
     let unspentOutputs = []
-    if (txRefs) {
-      unspentOutputs = txRefs.map(output => {
-        return {
-          fromTxId: output.tx_hash,
-          outputIndex: output.tx_output_n,
-          amount: BigNumber(output.value)
-            .dividedBy(10 ** 8)
-            .toNumber()
-        }
+    if (txs) {
+      unspentOutputTxs = txs.filter(tx => {
+        output = tx.outputs.filter(out => !out.spent_by)
+        return output.length > 0
       })
     }
+    unspentOutputs = unspentOutputTxs.map(tx => {
+      let index
+      let output
+      for (let i = 0; i < tx.outputs.length; i++) {
+        if (!tx.outputs[i].spent_by) {
+          index = i
+          output = tx.outputs[i]
+          break
+        }
+      }
+      return {
+        fromTxId: tx.hash,
+        outputIndex: index,
+        amount: BigNumber(output.value)
+            .dividedBy(10 ** 8)
+            .toNumber()
+      }
+    })
+
 
     let result = { unspentOutputs }
     if (withRawResult || globalReturnRawResult) result.raw = { provider: name, uri: publicUri, result: rawResult }
